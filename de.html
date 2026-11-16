@@ -237,11 +237,40 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
   padding:0.32rem 0.8rem;border-radius:999px;border:1.5px dashed #9B8E7B;
   background:transparent;color:#7a6e5d;font-size:0.82rem;cursor:pointer;font-family:inherit;
 }
+
+/* ── 頁首：回入口頁＋語言名稱 ── */
+.header{position:relative;padding-top:2.3rem}
+.header .home{
+  position:absolute;top:0.6rem;left:0.8rem;
+  color:#FAF6EF;opacity:0.8;text-decoration:none;font-size:0.85rem;
+  padding:0.2rem 0.5rem;border-radius:6px;
+}
+.header .home:hover,.header .home:active{opacity:1;background:rgba(255,255,255,0.15)}
+.header .lang-tag{font-size:0.95rem;opacity:0.85;letter-spacing:0.1em;margin-bottom:0.15rem}
+
+/* ── 字體加大：音標與中文翻譯 ── */
+.card .sub{font-size:1rem}
+.card .sub[style]{font-size:0.78rem}   /* 單字卡上方的分類標籤維持小字 */
+.card .desc{font-size:1.05rem}
+.card .rule-note{font-size:0.85rem}
+.al-ipa{font-size:1.2rem}
+.al-sub{font-size:0.95rem}
+.line .zh{font-size:1rem}
+.fc-back .ans-sub{font-size:1.2rem}
+.fc-back .ans-desc{font-size:1.1rem}
+.fc-back .ans-note{font-size:0.9rem}
+@media(max-width:420px){
+  .card .sub{font-size:0.95rem}
+  .card .sub[style]{font-size:0.75rem}
+  .card .desc{font-size:1rem}
+}
 </style>
 </head>
 <body>
 
 <div class="header">
+  <a class="home" href="./" aria-label="回入口頁">← 選語言</a>
+  <p class="lang-tag">德語</p>
   <h1>Hallo！</h1>
   <p class="subtitle" id="counter"></p>
 </div>

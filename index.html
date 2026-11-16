@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Iansui&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -52,6 +53,22 @@ body{
   .lang .name{font-size:1rem}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ── 頁尾（同 word-mapper）── */
+.credits{max-width:760px;margin:1rem auto 0;padding:1.2rem 1rem 2rem;border-top:2px solid #E6E0D6;text-align:center;font-size:.875rem;color:#475569;line-height:1.6}
+.credits a{color:#64748b;margin:0 .5rem;transition:color .2s;text-decoration:none}
+.credits a:hover{color:#3b82f6}
+.support-btn{
+  display:inline-block;
+  background:linear-gradient(to right, #facc15, #fb923c);
+  color:#ffffff !important;font-weight:600;font-size:1rem;
+  padding:.5rem 1.25rem;border-radius:9999px;
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  text-decoration:none;transition:transform .2s ease;
+}
+.support-btn:hover{transform:scale(1.05)}
+.support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
+@media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
 </style>
 </head>
 <body>
@@ -64,6 +81,27 @@ body{
 <div class="grid" id="grid"></div>
 
 <div class="footer">每個語言都有：字母與發音・基本單字・基本用語・小對話<br>點卡片聽發音，也可以切換到測驗模式翻牌練習</div>
+
+<footer class="credits">
+  <a href="mailto:mamahowma@gmail.com" aria-label="Email mamahowma"><i class="fa-solid fa-envelope fa-xl fa-fw" aria-hidden="true"></i></a>&emsp;
+  <a href="https://www.facebook.com/mamahowma" target="_blank" rel="noopener noreferrer" aria-label="mamahowma Facebook Page"><i class="fa-brands fa-facebook fa-xl fa-fw" aria-hidden="true"></i></a>&emsp;
+  <a href="https://portaly.cc/mamahowma/support" target="_blank" rel="noopener noreferrer" aria-label="Support mamahowma"><i class="fa-solid fa-mug-hot fa-xl fa-fw" aria-hidden="true"></i></a>
+  <br /><br />
+  <div class="support-cta">
+    <a href="https://portaly.cc/mamahowma/support" target="_blank" rel="noopener noreferrer" class="support-btn">
+      喜歡這個免費工具嗎？☕ 請杯咖啡鼓勵我
+    </a>
+  </div><br />
+  <div style="text-align:center; margin:10px 0 6px; font-size:0.95rem; color:#888;">🔡 More English Tools:</div>
+  <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0 auto 10px; padding:0 8px;">
+    <a href="https://jinshuanyu.github.io/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">🧰 全部工具</a>
+    <a href="https://jinshuanyu.github.io/Dolch-List-by-spelling-patterns/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">Dolch 高頻詞拼讀</a>
+    <a href="https://jinshuanyu.github.io/vowel-detective/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">母音偵探</a>
+    <a href="https://jinshuanyu.github.io/grow-a-sentence/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">句子擴寫</a>
+    <a href="https://jinshuanyu.github.io/englishplaylistsforkids/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">英語影片片單</a>
+    <a href="https://jinshuanyu.github.io/ipa-guide/" style="display:inline-block; padding:6px 14px; background:#dbeafe; color:#1d4ed8; text-decoration:none; border-radius:20px; font-size:1.05rem;">IPA 音標指南</a>  </div>
+  © 2025 Christina Yu. All rights reserved.
+</footer>
 
 <script>
 // ── 語言清單：要加新語言就在這裡加一行 ──
