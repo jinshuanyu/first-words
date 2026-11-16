@@ -633,17 +633,73 @@ function renderVariantBar() {
   }));
 }
 
+// ── 預錄音檔對照表（Azure 神經語音，由腳本產生，請勿手改）── START
+const AUDIO_FILES = {
+  "_": {
+    "Hello": "audio/en-US/8d6468db5e3b.mp3",
+    "Hi": "audio/en-US/0497976044ff.mp3",
+    "Good morning": "audio/en-US/f01fb4a1810a.mp3",
+    "Good night": "audio/en-US/3763f6673a63.mp3",
+    "Goodbye": "audio/en-US/234cfeb3eddd.mp3",
+    "See you!": "audio/en-US/160bf2592da1.mp3",
+    "How are you?": "audio/en-US/16c9aa113d22.mp3",
+    "I'm fine, thank you.": "audio/en-US/65b34ca71355.mp3",
+    "What's your name?": "audio/en-US/c82b98aa18ac.mp3",
+    "My name is ...": "audio/en-US/1292a0c10417.mp3",
+    "Nice to meet you.": "audio/en-US/1d5a591f84a7.mp3",
+    "Thank you": "audio/en-US/47c9eb971f9e.mp3",
+    "You're welcome": "audio/en-US/a13c4a1066e4.mp3",
+    "Please": "audio/en-US/d56fe49704e7.mp3",
+    "Excuse me": "audio/en-US/e6cdd8ec7699.mp3",
+    "I'm sorry": "audio/en-US/36fe25dc547c.mp3",
+    "Yes": "audio/en-US/681ee899a7ae.mp3",
+    "No": "audio/en-US/a1fdfbc1b7b0.mp3",
+    "I don't understand.": "audio/en-US/60b40357f45c.mp3",
+    "How much is it?": "audio/en-US/1c535f4e1945.mp3",
+    "Where is the bathroom?": "audio/en-US/b80af243cbf9.mp3",
+    "Can I have some water, please?": "audio/en-US/9aaf46ddb507.mp3",
+    "Let's go!": "audio/en-US/31809aaec996.mp3",
+    "Happy birthday!": "audio/en-US/48fe2a41e039.mp3",
+    "I love you.": "audio/en-US/ae558c87cb3d.mp3",
+    "Hi! How are you?": "audio/en-US/e3ecd2ec1fd5.mp3",
+    "I'm fine, thank you! And you?": "audio/en-US/17cf2d65cbf3.mp3",
+    "I'm good, thanks.": "audio/en-US/6ebd5f6f3aa4.mp3",
+    "Good morning! What's your name?": "audio/en-US/ad92ab4e91a8.mp3",
+    "My name is Leo. What's yours?": "audio/en-US/7f50520fdd51.mp3",
+    "I'm Emma. Nice to meet you!": "audio/en-US/0277ee17e207.mp3",
+    "Nice to meet you too!": "audio/en-US/c8c56761f35a.mp3",
+    "Excuse me, where is the bathroom?": "audio/en-US/b66f4cefe68f.mp3",
+    "It's over there, on the right.": "audio/en-US/cbb69618ed90.mp3",
+    "Thank you!": "audio/en-US/eea59a7f6977.mp3",
+    "You're welcome!": "audio/en-US/78d163f767d7.mp3",
+    "Hi! Can I have an ice cream, please?": "audio/en-US/6881e2d4b7fc.mp3",
+    "Which flavor?": "audio/en-US/c28211036146.mp3",
+    "Chocolate, please.": "audio/en-US/67f148a720c2.mp3",
+    "Here you go!": "audio/en-US/f1f8d8b89344.mp3",
+  },
+};
+// ── 預錄音檔對照表 ── END
+
 // ── TTS ──
 let currentAudio = null;
 function speak(text) {
   if (!text) return;
+  // 預錄音檔（audio/ 資料夾，Azure 神經語音）；沒有錄音的才用瀏覽器 TTS
+  const rec = (AUDIO_FILES[variant || '_'] || {})[text];
+  if (rec) { playFile(rec, text); return; }
   // 錄音檔（台語版用教育部辭典的真人錄音）
-  if (/^https?:\/\//.test(text)) {
-    if (currentAudio) currentAudio.pause();
-    currentAudio = new Audio(text);
-    currentAudio.play().catch(() => {});
-    return;
-  }
+  if (/^https?:\/\//.test(text)) { playFile(text); return; }
+  tts(text);
+}
+function playFile(url, fallbackText) {
+  if (currentAudio) currentAudio.pause();
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  currentAudio = new Audio(url);
+  // 錄音載入失敗就退回 TTS
+  if (fallbackText) currentAudio.onerror = () => tts(fallbackText);
+  currentAudio.play().catch(() => {});
+}
+function tts(text) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
