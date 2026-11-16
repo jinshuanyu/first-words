@@ -40,9 +40,8 @@ body{
   padding:1.3rem 1rem 1.1rem;text-align:center;
   font-size:1.6rem;letter-spacing:0.04em;
 }
-.lang .body{padding:0.8rem 1rem 1rem;text-align:center}
-.lang .name{font-size:1.15rem;color:var(--c)}
-.lang .units{font-size:0.78rem;color:#9B8E7B;margin-top:0.3rem}
+.lang .body{padding:0.9rem 1rem 1rem;text-align:center}
+.lang .name{font-size:1.5rem;color:var(--c)}
 
 .footer{text-align:center;padding:1.2rem 1rem 2rem;font-size:0.75rem;color:#bbb;line-height:1.7}
 
@@ -50,7 +49,7 @@ body{
   .header h1{font-size:1.6rem}
   .grid{grid-template-columns:repeat(2,1fr);gap:0.7rem;padding:1rem 0.8rem}
   .lang .top{font-size:1.3rem;padding:1rem 0.5rem 0.9rem}
-  .lang .name{font-size:1rem}
+  .lang .name{font-size:1.35rem}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
@@ -75,7 +74,7 @@ body{
 
 <div class="header">
   <h1>First Words</h1>
-  <p>多語言學習卡・選一個語言開始</p>
+  <p>字母 / 單字 / 用語 / 對話</p>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -106,13 +105,13 @@ body{
 <script>
 // ── 語言清單：要加新語言就在這裡加一行 ──
 const LANGS = [
-  { file:"en.html", hello:"Hello!",      name:"英語",     color:"#2F5D8A", unit:"字母與發音" },
-  { file:"ja.html", hello:"こんにちは！", name:"日語",     color:"#9E2B2B", unit:"五十音" },
-  { file:"tw.html", hello:"Gâu-tsá！",   name:"台語",     color:"#2E6B5E", unit:"台羅字母" },
-  { file:"es.html", hello:"¡Hola!",      name:"西班牙語", color:"#B5522B", unit:"字母與發音" },
-  { file:"fr.html", hello:"Bonjour !",   name:"法語",     color:"#1E3355", unit:"字母與發音" },
-  { file:"de.html", hello:"Hallo!",      name:"德語",     color:"#3A3A3A", unit:"字母與發音" },
-  { file:"it.html", hello:"Ciao!",       name:"義大利語", color:"#1F4D3A", unit:"字母與發音" },
+  { file:"en.html", hello:"Hello!",      name:"英語",     color:"#2F5D8A" },
+  { file:"ja.html", hello:"こんにちは！", name:"日語",     color:"#9E2B2B" },
+  { file:"tw.html", hello:"Gâu-tsá！",   name:"台語",     color:"#2E6B5E" },
+  { file:"es.html", hello:"¡Hola!",      name:"西班牙語", color:"#B5522B" },
+  { file:"fr.html", hello:"Bonjour !",   name:"法語",     color:"#1E3355" },
+  { file:"de.html", hello:"Hallo!",      name:"德語",     color:"#3A3A3A" },
+  { file:"it.html", hello:"Ciao!",       name:"義大利語", color:"#1F4D3A" },
 ];
 
 document.getElementById('grid').innerHTML = LANGS.map(l => `
@@ -120,7 +119,6 @@ document.getElementById('grid').innerHTML = LANGS.map(l => `
     <div class="top">${l.hello}</div>
     <div class="body">
       <div class="name">${l.name}</div>
-      <div class="units">${l.unit}・單字・用語・對話</div>
     </div>
   </a>`).join('');
 </script>
