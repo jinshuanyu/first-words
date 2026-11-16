@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <title>Ciao！義大利語學習卡</title>
-<!-- Andika：單層 a / g、IPA 與附加符號完整；中文退回 Noto Sans TC -->
+<!-- Noto Sans：IPA 與附加符號完整；中文退回 Noto Sans TC -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -267,8 +267,8 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
   .card .desc{font-size:1rem}
 }
 
-/* ── 字型：全頁改用 Andika（含標題、大字母、卡片主字） ── */
-body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-family:'Andika','Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
+/* ── 字型：全頁改用 Noto Sans（含標題、大字母、卡片主字） ── */
+body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-family:'Noto Sans','Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
 
 /* ── 手機版：上方選單字體加大 ── */
 @media(max-width:480px){
@@ -279,6 +279,9 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
   .mode-btn{font-size:1rem;padding:0.5rem 1.6rem}
   .chip{font-size:0.95rem;padding:0.4rem 0.85rem}
 }
+
+/* IPA 不用斜體 */
+.card .sub,.fc-back .ans-sub{font-style:normal}
 </style>
 </head>
 <body>
