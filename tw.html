@@ -517,6 +517,7 @@ const phrases = [
   { t:"恭喜", sub:"kiong-hí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5973.mp3", zh:"恭喜" },
   { t:"加油", sub:"ka-iû", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/23/23855.mp3", zh:"加油" },
   { t:"拜託", sub:"pài-thok", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4952.mp3", zh:"拜託" },
+  { t:"讚", sub:"tsán", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13397.mp3", zh:"很棒 / 太讚了" },
 ];
 
 // ── 小對話（每一句都是辭典裡的真人錄音）──
@@ -550,13 +551,6 @@ const dialogs = [
 
 // ── 發音規則（on:"sub" = 比對台羅那一行）──
 const phonics = [
-  { id:"tone1", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong1.mp3", audioLabel:"tong", label:"1 聲", sound:"高平", note:"沒有符號、結尾不是 p t k h：tshia（車）", re:/(^|[\s\-.,?!])([A-Za-z]*[abcdefgijlmnoqrsuvwxyz])(?=$|[\s\-.,?!])/g, grp:true, on:"sub" },
-  { id:"tone2", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong2.mp3", audioLabel:"tóng", label:"2 聲 á", sound:"高降", note:"符號 ´：hó（好）", re:/[A-Za-z]*́[A-Za-z]*/g, on:"sub" },
-  { id:"tone3", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong3.mp3", audioLabel:"tòng", label:"3 聲 à", sound:"低降", note:"符號 `：sì（四）", re:/[A-Za-z]*̀[A-Za-z]*/g, on:"sub" },
-  { id:"tone4", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong4.mp3", audioLabel:"tok", label:"4 聲", sound:"低促", note:"沒有符號、結尾是 p t k h：ah（鴨）", re:/(^|[\s\-.,?!])([A-Za-z]*[ptkh])(?=$|[\s\-.,?!])/g, grp:true, on:"sub" },
-  { id:"tone5", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong5.mp3", audioLabel:"tông", label:"5 聲 â", sound:"低升", note:"符號 ˆ：gû（牛）", re:/[A-Za-z]*̂[A-Za-z]*/g, on:"sub" },
-  { id:"tone7", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong7.mp3", audioLabel:"tōng", label:"7 聲 ā", sound:"中平", note:"符號 ¯：mī（麵）。第 6 聲在現代台語已和第 7 聲合併", re:/[A-Za-z]*̄[A-Za-z]*/g, on:"sub" },
-  { id:"tone8", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong8.mp3", audioLabel:"to̍k", label:"8 聲 a̍", sound:"高促", note:"符號 ̍、結尾是 p t k h：la̍k（六）", re:/[A-Za-z]*̍[A-Za-z]*/g, on:"sub" },
   { id:"asp", label:"送氣 ph th kh tsh", sound:"送氣", note:"h 表示送氣，吐氣比較強：pa ≠ pha", re:/tsh|ph|th|kh/g, on:"sub" },
   { id:"voiced", label:"濁音 b g j", sound:"/b/ /g/ /dz/", note:"聲帶要震動，華語沒有這三個音", re:/(^|[\s\-])([bgj])/g, grp:true, on:"sub" },
   { id:"nasal", label:"鼻化 nn", sound:"鼻化母音", note:"nn 不念出 n，是整個母音帶鼻音：sann（三）", re:/nn(?![̀-ͯg])/g, on:"sub" },
