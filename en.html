@@ -254,7 +254,6 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
 
 /* ── 字體加大：音標與中文翻譯 ── */
 .card .sub{font-size:1rem}
-.card .sub[style]{font-size:0.78rem}   /* 單字卡上方的分類標籤維持小字 */
 .card .desc{font-size:1.05rem}
 .card .rule-note{font-size:0.85rem}
 .al-ipa{font-size:1.2rem}
@@ -265,12 +264,21 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
 .fc-back .ans-note{font-size:0.9rem}
 @media(max-width:420px){
   .card .sub{font-size:0.95rem}
-  .card .sub[style]{font-size:0.75rem}
   .card .desc{font-size:1rem}
 }
 
 /* ── 字型：全頁改用 Andika（含標題、大字母、卡片主字） ── */
 body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-family:'Andika','Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
+
+/* ── 手機版：上方選單字體加大 ── */
+@media(max-width:480px){
+  .header .home{font-size:1.05rem}
+  /* 四個單元改成 2×2，字才放得大 */
+  .unit-bar{display:grid;grid-template-columns:1fr 1fr;gap:0.45rem;max-width:380px;margin:0 auto;padding:1rem 1rem 0.3rem}
+  .unit-btn,.unit-btn:first-child,.unit-btn:last-child{border:2px solid #2F5D8A;border-radius:8px;font-size:1rem;padding:0.55rem 0.3rem}
+  .mode-btn{font-size:1rem;padding:0.5rem 1.6rem}
+  .chip{font-size:0.95rem;padding:0.4rem 0.85rem}
+}
 </style>
 </head>
 <body>
@@ -742,7 +750,6 @@ function renderBrowse() {
     grid.innerHTML = catChips + phonicsChips + (list.length ? '' : `<div class="quiz-msg" style="grid-column:1/-1">這個分類裡沒有符合這條規則的字。</div>`) + list.map(w => `
       <div class="card" data-speak="${sayOf(w)}">
         <button class="speak" data-speak="${sayOf(w)}" aria-label="播放">🔊</button>
-        <div class="sub" style="margin-bottom:0.2rem">${w.cat}</div>
         <div class="emoji">${w.emoji}</div>
         <div class="main" style="font-size:1.15rem">${hl(w.t)}</div>
         ${subLine(w)}
