@@ -282,6 +282,20 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 
 /* IPA 不用斜體 */
 .card .sub,.fc-back .ans-sub{font-style:normal}
+
+/* ── 頁尾贊助按鈕（同入口頁）── */
+.support-cta{text-align:center;padding:0.2rem 1rem 2rem}
+.support-btn{
+  display:inline-block;
+  background:linear-gradient(to right, #facc15, #fb923c);
+  color:#ffffff !important;font-weight:600;font-size:1rem;
+  padding:.5rem 1.25rem;border-radius:9999px;
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  text-decoration:none;transition:transform .2s ease;
+}
+.support-btn:hover{transform:scale(1.05)}
+.support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
+@media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
 </style>
 </head>
 <body>
@@ -305,6 +319,10 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 <div id="quiz-view" class="quiz" style="display:none"></div>
 
 <div class="footer">法語學習卡 — 點卡片聽發音</div>
+
+<div class="support-cta">
+  <a href="https://portaly.cc/mamahowma/support" target="_blank" rel="noopener noreferrer" class="support-btn">喜歡這個免費工具嗎？☕ 請杯咖啡鼓勵我</a>
+</div>
 
 <script>
 // ============================================================
