@@ -294,7 +294,7 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 <div id="browse-view" class="grid"></div>
 <div id="quiz-view" class="quiz" style="display:none"></div>
 
-<div class="footer">台語學習卡 — 點擊卡片播放發音<br>台羅與錄音：<a href="https://sutian.moe.edu.tw/" target="_blank" rel="noopener">教育部《臺灣台語常用詞辭典》</a>（CC BY-ND 3.0 TW）<br>字母與聲調錄音：<a href="https://tailo.moe.edu.tw/" target="_blank" rel="noopener">教育部臺灣台語羅馬字拼音教學網</a></div>
+<div class="footer">台語學習卡 — 點卡片聽發音<br>台羅與錄音：<a href="https://sutian.moe.edu.tw/" target="_blank" rel="noopener">教育部《臺灣台語常用詞辭典》</a>（CC BY-ND 3.0 TW）<br>字母與聲調錄音：<a href="https://tailo.moe.edu.tw/" target="_blank" rel="noopener">教育部臺灣台語羅馬字拼音教學網</a></div>
 
 <script>
 // ============================================================
@@ -829,8 +829,8 @@ function renderQuizCard() {
 
   if (currentUnit === 'alphabet') {
     frontHTML = true
-      ? `<button class="speak-circle" id="fc-listen" style="margin:0 auto 0.6rem" aria-label="播放">🔊</button><div class="tap-hint">先聽聲音，是哪個符號？點擊翻牌</div>`
-      : `<div class="prompt">${item.name}</div><div class="tap-hint">是哪個符號？點擊翻牌</div>`;
+      ? `<button class="speak-circle" id="fc-listen" style="margin:0 auto 0.6rem" aria-label="播放">🔊</button><div class="tap-hint">先聽聲音，是哪個符號？點一下翻牌</div>`
+      : `<div class="prompt">${item.name}</div><div class="tap-hint">是哪個符號？點一下翻牌</div>`;
     backHTML = `
       <div class="ans-main">${item.letter}</div>
       <div class="ans-sub">${ipaOf(item)}</div>
@@ -838,7 +838,7 @@ function renderQuizCard() {
   }
   else {
     const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
-    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">台語怎麼說？點擊翻牌</div>`;
+    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">台語怎麼說？點一下翻牌</div>`;
     backHTML = `${em}
       <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
       ${subOf(item) ? `<div class="ans-sub">${currentUnit === 'words' ? hl(subOf(item), 'sub') : subOf(item)}</div>` : ''}

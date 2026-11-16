@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
 <title>こんにちは！日語學習卡</title>
+<!-- 羅馬字用 Noto Sans（Noto Sans JP 的長音符號位置會跑掉）；假名、漢字用 Noto Sans JP，字形才是日本寫法；中文用 Noto Sans TC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
@@ -264,6 +268,13 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
   .card .sub[style]{font-size:0.75rem}
   .card .desc{font-size:1rem}
 }
+
+/* ── 字型：中文介面用 Noto Sans TC；日文的部分羅馬字用 Noto Sans、假名漢字用 Noto Sans JP ── */
+body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
+.header h1,.al-letter,.al-main,.al-ipa,.card .main,.card .sub,.line .it,.fc-back .ans-main,.fc-back .ans-sub{
+  font-family:'Noto Sans','Noto Sans JP','Hiragino Sans','Yu Gothic','Noto Sans TC',sans-serif;
+}
+.card .sub[style]{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}   /* 分類標籤是中文 */
 </style>
 </head>
 <body>
@@ -286,7 +297,7 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
 <div id="browse-view" class="grid"></div>
 <div id="quiz-view" class="quiz" style="display:none"></div>
 
-<div class="footer">日語學習卡 — 點擊卡片播放發音</div>
+<div class="footer">日語學習卡 — 點卡片聽發音</div>
 
 <script>
 // ============================================================
@@ -823,7 +834,7 @@ function renderQuizCard() {
   let frontHTML, backHTML;
 
   if (currentUnit === 'alphabet') {
-    frontHTML = `<div class="prompt">${item.name}</div><div class="tap-hint">是哪個假名？點擊翻牌</div>`;
+    frontHTML = `<div class="prompt">${item.name}</div><div class="tap-hint">是哪個假名？點一下翻牌</div>`;
     backHTML = `
       <div class="ans-main">${item.letter}</div>
       <div class="ans-sub">${ipaOf(item)}</div>
@@ -831,7 +842,7 @@ function renderQuizCard() {
   }
   else {
     const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
-    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">日文怎麼說？點擊翻牌</div>`;
+    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">日文怎麼說？點一下翻牌</div>`;
     backHTML = `${em}
       <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
       ${subOf(item) ? `<div class="ans-sub">${currentUnit === 'words' ? hl(subOf(item), 'sub') : subOf(item)}</div>` : ''}

@@ -293,7 +293,7 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 <div id="browse-view" class="grid"></div>
 <div id="quiz-view" class="quiz" style="display:none"></div>
 
-<div class="footer">德語學習卡 — 點擊卡片播放發音</div>
+<div class="footer">德語學習卡 — 點卡片聽發音</div>
 
 <script>
 // ============================================================
@@ -830,7 +830,7 @@ function renderQuizCard() {
   let frontHTML, backHTML;
 
   if (currentUnit === 'alphabet') {
-    frontHTML = `<div class="prompt">${item.name}</div><div class="tap-hint">這是哪個字母？點擊翻牌</div>`;
+    frontHTML = `<div class="prompt">${item.name}</div><div class="tap-hint">這是哪個字母？點一下翻牌</div>`;
     backHTML = `
       <div class="ans-main">${item.letter}</div>
       <div class="ans-sub">${ipaOf(item)}</div>
@@ -838,7 +838,7 @@ function renderQuizCard() {
   }
   else {
     const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
-    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">德文怎麼說？點擊翻牌</div>`;
+    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">德文怎麼說？點一下翻牌</div>`;
     backHTML = `${em}
       <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
       ${subOf(item) ? `<div class="ans-sub">${currentUnit === 'words' ? hl(subOf(item), 'sub') : subOf(item)}</div>` : ''}
