@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Hello！英語學習卡</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:#FAF6EF;color:#2C2C2C;
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── Header ── */
+.header{
+  background:#2F5D8A;color:#FAF6EF;
+  text-align:center;padding:1.6rem 1rem 1.2rem;
+}
+.header h1{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:1.9rem;font-weight:400;letter-spacing:0.06em;
+}
+.header .subtitle{font-size:0.8rem;opacity:0.6;margin-top:0.2rem}
+
+/* ── Unit Tabs ── */
+.unit-bar{
+  display:flex;gap:0;justify-content:center;
+  padding:1rem 0.6rem 0.3rem;flex-wrap:wrap;
+}
+.unit-btn{
+  padding:0.45rem 1rem;
+  border:2px solid #2F5D8A;border-right:none;
+  background:transparent;color:#2F5D8A;
+  font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;font-family:inherit;
+  white-space:nowrap;
+}
+.unit-btn:last-child{border-right:2px solid #2F5D8A}
+.unit-btn:first-child{border-radius:6px 0 0 6px}
+.unit-btn:last-child{border-radius:0 6px 6px 0}
+.unit-btn.active{background:#2F5D8A;color:#FAF6EF}
+
+/* ── Mode Toggle ── */
+.mode-bar{
+  display:flex;justify-content:center;
+  padding:0.6rem 1rem 0.5rem;
+}
+.mode-btn{
+  padding:0.4rem 1.4rem;
+  border:1.5px solid #9B8E7B;
+  background:transparent;color:#9B8E7B;
+  font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;font-family:inherit;
+}
+.mode-btn:first-child{border-radius:5px 0 0 5px}
+.mode-btn:last-child{border-radius:0 5px 5px 0;border-left:none}
+.mode-btn.active{background:#9B8E7B;color:#fff}
+
+/* ── Browse Grid ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:0.8rem;padding:0.8rem 1rem;
+  max-width:760px;margin:0 auto;
+}
+.grid.dialog-grid{grid-template-columns:1fr;max-width:620px}
+
+/* ── Alphabet table（字母｜字母名｜字母音｜例字 並列）── */
+.grid.alpha-table{
+  display:flex;flex-direction:column;gap:0.9rem;
+  max-width:720px;
+}
+.alpha-row{
+  display:grid;grid-template-columns:72px 1fr 1.3fr;
+  align-items:center;gap:0.6rem;
+}
+.al-ipa{font-size:1rem;color:#9B8E7B;line-height:1.4;margin-top:0.15rem}
+.alpha-row{
+  background:#fff;border-radius:14px;padding:1.1rem 1rem;
+  box-shadow:0 4px 14px rgba(47,93,138,0.09);
+}
+.alpha-row.has-note{background:#F7F3EC}
+.alpha-row > div{
+  cursor:pointer;border-radius:6px;padding:0.25rem 0.3rem;
+  transition:background 0.15s;
+}
+.alpha-row > div:hover,.alpha-row > div:active{background:#F3EEE4}
+.al-letter{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:2.8rem;color:#2F5D8A;text-align:center;
+}
+.al-main{font-size:1.15rem;color:#2C2C2C;line-height:1.3}
+.al-sub{font-size:0.75rem;color:#9B8E7B;font-style:italic;line-height:1.3}
+.al-word .al-main{color:#2F5D8A}
+@media(max-width:420px){
+  .alpha-row{grid-template-columns:56px 1fr 1.3fr;gap:0.4rem}
+  .al-letter{font-size:2.3rem}
+  .al-main{font-size:1.05rem}
+}
+
+.card{
+  background:#fff;border-radius:10px;
+  padding:1rem 0.7rem 0.9rem;text-align:center;
+  box-shadow:0 2px 10px rgba(47,93,138,0.07);
+  cursor:pointer;transition:transform 0.15s;position:relative;
+}
+.card:active{transform:scale(0.97)}
+
+.card .main{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:1.3rem;color:#2F5D8A;line-height:1.3;margin-bottom:0.2rem;
+}
+.card.alpha-card .main{font-size:1.8rem;margin-bottom:0.1rem}
+/* ── 拼讀篩選 ── */
+.chips{
+  grid-column:1/-1;display:flex;flex-wrap:wrap;gap:0.4rem;
+  align-items:center;padding:0.2rem 0 0.3rem;
+}
+.chips-label{font-size:0.78rem;color:#9B8E7B;margin-right:0.2rem}
+.chip{
+  padding:0.32rem 0.75rem;border-radius:999px;
+  border:1.5px solid #2F5D8A;background:#fff;color:#2F5D8A;
+  font-size:0.82rem;cursor:pointer;font-family:inherit;
+}
+.chip.active{background:#2F5D8A;color:#FAF6EF}
+.rule-box{
+  grid-column:1/-1;background:#FFF6E0;border-radius:10px;
+  padding:0.7rem 0.9rem;font-size:0.88rem;color:#555;line-height:1.5;
+}
+.rule-box b{color:#2F5D8A;font-size:1rem}
+mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
+.card .emoji{font-size:2.2rem;line-height:1.2;margin:0.1rem 0 0.25rem}
+.card .sub{font-size:0.82rem;color:#9B8E7B;font-style:italic;margin-bottom:0.3rem}
+.card .desc{font-size:0.88rem;color:#666}
+.card .sound{font-size:0.85rem;color:#444;margin-top:0.3rem}
+.card .word{font-size:0.85rem;color:#2F5D8A;margin-top:0.3rem}
+.card .rule-note{font-size:0.72rem;color:#b3a694;margin-top:0.25rem}
+
+.card .speak{
+  position:absolute;top:5px;right:7px;
+  background:none;border:none;font-size:1rem;
+  cursor:pointer;opacity:0.3;transition:opacity 0.2s;padding:3px;
+}
+.card .speak:hover,.card .speak:active{opacity:0.9}
+
+/* ── Dialogue ── */
+.dialog-card{
+  background:#fff;border-radius:10px;padding:0.9rem 0.8rem;
+  box-shadow:0 2px 10px rgba(47,93,138,0.07);
+}
+.dialog-card h3{
+  font-family:Georgia,'Times New Roman',serif;font-weight:400;
+  font-size:1.1rem;color:#2F5D8A;margin-bottom:0.5rem;
+}
+.line{
+  display:grid;grid-template-columns:auto 1fr;
+  column-gap:0.7rem;row-gap:0.1rem;
+  padding:0.5rem 0.4rem;border-radius:8px;cursor:pointer;
+  transition:background 0.15s;
+}
+.line:hover,.line:active{background:#F3EEE4}
+.line .who{grid-row:span 2;color:#9B8E7B;font-weight:bold;align-self:center}
+.line .it{color:#2F5D8A;font-size:1rem}
+.line .zh{color:#777;font-size:0.85rem}
+
+/* ── Quiz Mode ── */
+.quiz{
+  max-width:380px;margin:0.4rem auto;
+  padding:0 1rem 2rem;text-align:center;
+}
+.flashcard{
+  background:#fff;border-radius:14px;
+  padding:2.5rem 1.5rem;
+  box-shadow:0 4px 24px rgba(47,93,138,0.08);
+  min-height:220px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+}
+.flashcard:active{box-shadow:0 2px 12px rgba(47,93,138,0.12)}
+
+.fc-front .prompt{font-size:1.7rem;color:#444;margin-bottom:0.4rem}
+.fc-front .tap-hint{font-size:0.78rem;color:#bbb}
+.fc-front .fc-note{font-size:0.78rem;color:#aaa;margin-top:0.3rem}
+
+.fc-back{display:none;flex-direction:column;align-items:center}
+.flashcard.revealed .fc-front{display:none}
+.flashcard.revealed .fc-back{display:flex}
+
+.fc-back .ans-main{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:2rem;color:#2F5D8A;margin-bottom:0.2rem;
+}
+.fc-back .ans-sub{font-size:1rem;color:#9B8E7B;font-style:italic;margin-bottom:0.2rem}
+.fc-back .ans-desc{font-size:0.95rem;color:#888;margin-bottom:0.3rem}
+.fc-back .ans-note{font-size:0.78rem;color:#b3a694;margin-bottom:0.6rem}
+
+.speak-circle{
+  width:42px;height:42px;border-radius:50%;
+  background:#2F5D8A;color:#FAF6EF;border:none;
+  font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.15s;
+}
+.speak-circle:active{transform:scale(0.9)}
+
+.quiz-nav{display:flex;justify-content:center;gap:0.7rem;margin-top:1rem}
+.q-btn{
+  padding:0.5rem 1.3rem;border:none;border-radius:8px;
+  font-size:0.88rem;cursor:pointer;font-family:inherit;transition:all 0.15s;
+}
+.q-btn.pri{background:#2F5D8A;color:#fff}
+.q-btn.pri:active{background:#234A70}
+.q-btn.sec{background:#E6E0D6;color:#555}
+.q-btn.sec:active{background:#d9d2c7}
+.progress-text{margin-top:0.8rem;font-size:0.78rem;color:#aaa}
+.quiz-msg{font-size:0.9rem;color:#777;padding:2rem 0.5rem}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:1.2rem 1rem;font-size:0.72rem;color:#ccc}
+
+@media(max-width:420px){
+  .header h1{font-size:1.5rem}
+  .unit-btn{padding:0.4rem 0.7rem;font-size:0.78rem}
+  .grid{grid-template-columns:repeat(2,1fr);gap:0.6rem;padding:0.7rem}
+  .grid.dialog-grid{grid-template-columns:1fr}
+  .card .main{font-size:1.15rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.chip.sm{padding:0.26rem 0.65rem;font-size:0.78rem}
+.variant-bar{display:flex;justify-content:center;align-items:center;gap:0.4rem;padding:0.8rem 1rem 0;font-size:0.8rem;color:#9B8E7B}
+.footer a{color:inherit}
+.toggle{
+  padding:0.32rem 0.8rem;border-radius:999px;border:1.5px dashed #9B8E7B;
+  background:transparent;color:#7a6e5d;font-size:0.82rem;cursor:pointer;font-family:inherit;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Hello！</h1>
+  <p class="subtitle" id="counter"></p>
+</div>
+
+<div class="variant-bar" id="variant-bar"></div>
+<div class="unit-bar" id="unit-bar"></div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" data-mode="browse">瀏覽</button>
+  <button class="mode-btn" data-mode="quiz">測驗</button>
+</div>
+
+<div id="browse-view" class="grid"></div>
+<div id="quiz-view" class="quiz" style="display:none"></div>
+
+<div class="footer">英語學習卡 — 點擊卡片播放發音</div>
+
+<script>
+// ============================================================
+//  📝 資料區 — 擴充只要在對應陣列加一行就好
+//  t = 目標語言文字；sub = 第二行（IPA / 漢字・拼音）；say = 給語音念的文字（沒有就念 t）
+// ============================================================
+// word-mapper 音檔（https://jinshuanyu.github.io/word-mapper/）
+const WM = 'https://jinshuanyu.github.io/word-mapper/audio/';
+// ── 單元一：字母（美式發音，IPA 用 Cambridge 美式寫法）──
+//    改用 word-mapper 的寫法與音檔：點字母念字母名（say），點中間念字母短音（soundSay），點例字念例字（wordSay）
+const alphabet = [
+  { letter:"A", name:"a", ipa:"/eɪ/", sound:"/æ/", say:WM+"letters/A.mp3", soundSay:WM+"phonemes/a_short.mp3", word:"apple", wordSay:WM+"food-1/apple.mp3", zh:"蘋果" },
+  { letter:"B", name:"b", ipa:"/bi/", sound:"/b/", say:WM+"letters/B.mp3", soundSay:WM+"phonemes/c2.mp3", word:"ball", wordSay:WM+"sports-1/ball.mp3", zh:"球" },
+  { letter:"C", name:"c", ipa:"/si/", sound:"/k/", say:WM+"letters/C.mp3", soundSay:WM+"phonemes/c5.mp3", word:"cat", wordSay:WM+"animals-1/cat.mp3", zh:"貓" },
+  { letter:"D", name:"d", ipa:"/di/", sound:"/d/", say:WM+"letters/D.mp3", soundSay:WM+"phonemes/c4.mp3", word:"dog", wordSay:WM+"animals-1/dog.mp3", zh:"狗" },
+  { letter:"E", name:"e", ipa:"/i/", sound:"/ɛ/", say:WM+"letters/E.mp3", soundSay:WM+"phonemes/e_short.mp3", word:"egg", wordSay:WM+"food-2/egg.mp3", zh:"蛋" },
+  { letter:"F", name:"f", ipa:"/ɛf/", sound:"/f/", say:WM+"letters/F.mp3", soundSay:WM+"phonemes/c7.mp3", word:"fish", wordSay:WM+"animals-1/fish.mp3", zh:"魚" },
+  { letter:"G", name:"g", ipa:"/dʒi/", sound:"/ɡ/", say:WM+"letters/G.mp3", soundSay:WM+"phonemes/c6.mp3", word:"goat", wordSay:WM+"animals-1/goat.mp3", zh:"山羊" },
+  { letter:"H", name:"h", ipa:"/eɪtʃ/", sound:"/h/", say:WM+"letters/H.mp3", soundSay:WM+"phonemes/c17.mp3", word:"hat", wordSay:WM+"clothes-1/hat.mp3", zh:"帽子" },
+  { letter:"I", name:"i", ipa:"/aɪ/", sound:"/ɪ/", say:WM+"letters/I.mp3", soundSay:WM+"phonemes/i_short.mp3", word:"igloo", wordSay:WM+"house-1/igloo.mp3", zh:"冰屋" },
+  { letter:"J", name:"j", ipa:"/dʒeɪ/", sound:"/dʒ/", say:WM+"letters/J.mp3", soundSay:WM+"phonemes/c16.mp3", word:"jam", wordSay:WM+"food-3/jam.mp3", zh:"果醬" },
+  { letter:"K", name:"k", ipa:"/keɪ/", sound:"/k/", say:WM+"letters/K.mp3", soundSay:WM+"phonemes/c5.mp3", word:"kite", wordSay:WM+"sports-3/kite.mp3", zh:"風箏" },
+  { letter:"L", name:"l", ipa:"/ɛl/", sound:"/l/", say:WM+"letters/L.mp3", soundSay:WM+"phonemes/c21.mp3", word:"lion", wordSay:WM+"animals-2/lion.mp3", zh:"獅子" },
+  { letter:"M", name:"m", ipa:"/ɛm/", sound:"/m/", say:WM+"letters/M.mp3", soundSay:WM+"phonemes/c18.mp3", word:"moon", wordSay:WM+"space/moon.mp3", zh:"月亮" },
+  { letter:"N", name:"n", ipa:"/ɛn/", sound:"/n/", say:WM+"letters/N.mp3", soundSay:WM+"phonemes/c19.mp3", word:"nest", wordSay:WM+"animals-2/nest.mp3", zh:"鳥巢" },
+  { letter:"O", name:"o", ipa:"/oʊ/", sound:"/ɑ/", say:WM+"letters/O.mp3", soundSay:WM+"phonemes/o_short.mp3", word:"octopus", wordSay:WM+"animals-2/octopus.mp3", zh:"章魚" },
+  { letter:"P", name:"p", ipa:"/pi/", sound:"/p/", say:WM+"letters/P.mp3", soundSay:WM+"phonemes/c1.mp3", word:"pig", wordSay:WM+"animals-1/pig.mp3", zh:"豬" },
+  { letter:"Q", name:"q", ipa:"/kju/", sound:"/kw/", say:WM+"letters/Q.mp3", soundSay:WM+"phonemes/kw.mp3", word:"queen", wordSay:WM+"occupations-4/queen.mp3", zh:"女王", note:"q 後面幾乎都接 u" },
+  { letter:"R", name:"r", ipa:"/ɑr/", sound:"/r/", say:WM+"letters/R.mp3", soundSay:WM+"phonemes/c22.mp3", word:"rabbit", wordSay:WM+"animals-2/rabbit.mp3", zh:"兔子" },
+  { letter:"S", name:"s", ipa:"/ɛs/", sound:"/s/", say:WM+"letters/S.mp3", soundSay:WM+"phonemes/c11.mp3", word:"sun", wordSay:WM+"space/sun.mp3", zh:"太陽" },
+  { letter:"T", name:"t", ipa:"/ti/", sound:"/t/", say:WM+"letters/T.mp3", soundSay:WM+"phonemes/c3.mp3", word:"tiger", wordSay:WM+"animals-1/tiger.mp3", zh:"老虎" },
+  { letter:"U", name:"u", ipa:"/ju/", sound:"/ʌ/", say:WM+"letters/U.mp3", soundSay:WM+"phonemes/u_short.mp3", word:"umbrella", wordSay:WM+"clothes-2/umbrella.mp3", zh:"雨傘" },
+  { letter:"V", name:"v", ipa:"/vi/", sound:"/v/", say:WM+"letters/V.mp3", soundSay:WM+"phonemes/c8.mp3", word:"van", wordSay:WM+"transportation-2/van.mp3", zh:"廂型車" },
+  { letter:"W", name:"w", ipa:"/ˈdʌbəlju/", sound:"/w/", say:WM+"letters/W.mp3", soundSay:WM+"phonemes/c23.mp3", word:"window", wordSay:WM+"house-1/window.mp3", zh:"窗戶" },
+  { letter:"X", name:"x", ipa:"/ɛks/", sound:"/ks/", say:WM+"letters/X.mp3", soundSay:WM+"phonemes/ks.mp3", word:"fox", wordSay:WM+"animals-3/fox.mp3", zh:"狐狸", note:"x 很少在字首，常見在字尾 /ks/" },
+  { letter:"Y", name:"y", ipa:"/waɪ/", sound:"/j/", say:WM+"letters/Y.mp3", soundSay:WM+"phonemes/c24.mp3", word:"yo-yo", wordSay:WM+"sports-3/yo-yo.mp3", zh:"溜溜球" },
+  { letter:"Z", name:"z", ipa:"/zi/", sound:"/z/", say:WM+"letters/Z.mp3", soundSay:WM+"phonemes/c12.mp3", word:"zebra", wordSay:WM+"animals-1/zebra.mp3", zh:"斑馬", note:"英式念 /zɛd/" },
+];
+
+// ── 基本用語（sub = IPA，用 word-mapper 的寫法；語音仍用 TTS）──
+const phrases = [
+  { t:"Hello",                  sub:"/həˈloʊ/",               zh:"你好",           note:"" },
+  { t:"Hi",                     sub:"/haɪ/",                  zh:"嗨",             note:"比較輕鬆的說法" },
+  { t:"Good morning",           sub:"/ɡʊd ˈmɔrnɪŋ/",         zh:"早安",           note:"" },
+  { t:"Good night",             sub:"/ɡʊd naɪt/",             zh:"晚安",           note:"睡前或晚上道別用" },
+  { t:"Goodbye",                sub:"/ɡʊdˈbaɪ/",              zh:"再見",           note:"" },
+  { t:"See you!",               sub:"/ˈsi ju/",             zh:"掰掰 / 下次見",  note:"" },
+  { t:"How are you?",           sub:"/haʊ ɑr ju/",          zh:"你好嗎？",       note:"" },
+  { t:"I'm fine, thank you.",   sub:"/aɪm faɪn ˈθæŋk ju/",   zh:"我很好，謝謝。", note:"" },
+  { t:"What's your name?",      sub:"/wʌts jʊr neɪm/",        zh:"你叫什麼名字？", note:"" },
+  { t:"My name is ...",         sub:"/maɪ neɪm ɪz/",          zh:"我叫……",        note:"把 ... 換成自己的名字" },
+  { t:"Nice to meet you.",      sub:"/naɪs tə mit ju/",     zh:"很高興認識你。", note:"" },
+  { t:"Thank you",              sub:"/ˈθæŋk ju/",            zh:"謝謝",           note:"" },
+  { t:"You're welcome",         sub:"/jʊr ˈwɛlkəm/",          zh:"不客氣",         note:"" },
+  { t:"Please",                 sub:"/pliz/",                zh:"請",             note:"" },
+  { t:"Excuse me",              sub:"/ɪkˈskjuz mi/",        zh:"不好意思",       note:"引起注意或借過時用" },
+  { t:"I'm sorry",              sub:"/aɪm ˈsɑri/",           zh:"對不起",         note:"" },
+  { t:"Yes",                    sub:"/jɛs/",                  zh:"是",             note:"" },
+  { t:"No",                     sub:"/noʊ/",                  zh:"不",             note:"" },
+  { t:"I don't understand.",    sub:"/aɪ doʊnt ˌʌndɚˈstænd/", zh:"我聽不懂。",     note:"" },
+  { t:"How much is it?",        sub:"/haʊ mʌtʃ ɪz ɪt/",       zh:"多少錢？",       note:"" },
+  { t:"Where is the bathroom?", sub:"/wɛr ɪz ðə ˈbæθrum/",   zh:"廁所在哪裡？",   note:"" },
+  { t:"Can I have some water, please?", sub:"/kæn aɪ hæv səm ˈwɑtɚ pliz/", zh:"可以給我一些水嗎？", note:"" },
+  { t:"Let's go!",              sub:"/lɛts ɡoʊ/",             zh:"走吧！",         note:"" },
+  { t:"Happy birthday!",        sub:"/ˈhæpi ˈbɝθdeɪ/",       zh:"生日快樂！",     note:"" },
+  { t:"I love you.",            sub:"/aɪ lʌv ju/",           zh:"我愛你。",       note:"" },
+];
+
+// ── 小對話 ──
+const dialogs = [
+  { title:"打招呼", lines:[
+    { who:"A", t:"Hi! How are you?",                 zh:"嗨！你好嗎？" },
+    { who:"B", t:"I'm fine, thank you! And you?",    zh:"我很好，謝謝！你呢？" },
+    { who:"A", t:"I'm good, thanks.",                zh:"我也很好，謝謝。" },
+  ]},
+  { title:"自我介紹", lines:[
+    { who:"A", t:"Good morning! What's your name?",  zh:"早安！你叫什麼名字？" },
+    { who:"B", t:"My name is Leo. What's yours?",    zh:"我叫里歐。你呢？" },
+    { who:"A", t:"I'm Emma. Nice to meet you!",      zh:"我是艾瑪。很高興認識你！" },
+    { who:"B", t:"Nice to meet you too!",            zh:"我也很高興認識你！" },
+  ]},
+  { title:"問路", lines:[
+    { who:"A", t:"Excuse me, where is the bathroom?", zh:"不好意思，廁所在哪裡？" },
+    { who:"B", t:"It's over there, on the right.",    zh:"在那邊，右手邊。" },
+    { who:"A", t:"Thank you!",                        zh:"謝謝！" },
+    { who:"B", t:"You're welcome!",                   zh:"不客氣！" },
+  ]},
+  { title:"點冰淇淋", lines:[
+    { who:"A", t:"Hi! Can I have an ice cream, please?", zh:"嗨！可以給我一支冰淇淋嗎？" },
+    { who:"B", t:"Which flavor?",                        zh:"什麼口味？" },
+    { who:"A", t:"Chocolate, please.",                   zh:"巧克力，麻煩你。" },
+    { who:"B", t:"Here you go!",                         zh:"請拿！" },
+    { who:"A", t:"Thank you!",                           zh:"謝謝！" },
+  ]},
+];
+
+// ── 基本單字（sub = word-mapper 的 IPA；say = word-mapper 音檔）──
+const words = [
+  // 食物
+  { emoji:"🍦", t:"ice cream",  sub:"/aɪs krim/", say:WM+"food-3/ice_cream.mp3", zh:"冰淇淋", cat:"食物" },
+  { emoji:"🍕", t:"pizza",      sub:"/ˈpitsə/", say:WM+"food-2/pizza.mp3", zh:"披薩", cat:"食物" },
+  { emoji:"🍜", t:"noodles",    sub:"/ˈnudlz/", say:WM+"food-2/noodles.mp3", zh:"麵", cat:"食物" },
+  { emoji:"🍞", t:"bread",      sub:"/brɛd/", say:WM+"food-3/bread.mp3", zh:"麵包", cat:"食物" },
+  { emoji:"🥛", t:"milk",       sub:"/mɪlk/", say:WM+"food-4/milk.mp3", zh:"牛奶", cat:"食物" },
+  { emoji:"💧", t:"water",      sub:"/ˈwɑtɚ/", say:WM+"food-4/water.mp3", zh:"水", cat:"食物" },
+  { emoji:"🧃", t:"juice",      sub:"/dʒus/", say:WM+"food-4/juice.mp3", zh:"果汁", cat:"食物" },
+  { emoji:"☕", t:"coffee",     sub:"/ˈkɔfi/", say:WM+"food-4/coffee.mp3", zh:"咖啡", cat:"食物" },
+  { emoji:"🍚", t:"rice",       sub:"/raɪs/", say:WM+"food-2/rice.mp3", zh:"米飯", cat:"食物" },
+  { emoji:"🥚", t:"egg",        sub:"/ɛɡ/", say:WM+"food-2/egg.mp3", zh:"蛋", cat:"食物" },
+  { emoji:"🐟", t:"fish",       sub:"/fɪʃ/", say:WM+"animals-1/fish.mp3", zh:"魚", cat:"食物" },
+  { emoji:"🧀", t:"cheese",     sub:"/tʃiz/", say:WM+"food-3/cheese.mp3", zh:"起司", cat:"食物" },
+  { emoji:"🍎", t:"apple",      sub:"/ˈæpəl/", say:WM+"food-1/apple.mp3", zh:"蘋果", cat:"食物" },
+  { emoji:"🍌", t:"banana",     sub:"/bəˈnænə/", say:WM+"food-1/banana.mp3", zh:"香蕉", cat:"食物" },
+  { emoji:"🍇", t:"grapes",     sub:"/ɡreɪps/", say:WM+"food-1/grapes.mp3", zh:"葡萄", cat:"食物" },
+  { emoji:"🍓", t:"strawberry", sub:"/ˈstrɔbɛri/", say:WM+"food-1/strawberry.mp3", zh:"草莓", cat:"食物" },
+  { emoji:"🍊", t:"orange",     sub:"/ˈɔrɪndʒ/", say:WM+"colors/orange.mp3", zh:"柳橙", cat:"食物" },
+  { emoji:"🍫", t:"chocolate",  sub:"/ˈtʃɔklət/", say:WM+"food-3/chocolate.mp3", zh:"巧克力", cat:"食物" },
+  { emoji:"🍪", t:"cookie",     sub:"/ˈkʊki/", say:WM+"food-3/cookie.mp3", zh:"餅乾", cat:"食物" },
+  { emoji:"🎂", t:"cake",       sub:"/keɪk/", say:WM+"food-3/cake.mp3", zh:"蛋糕", cat:"食物" },
+  { emoji:"🍬", t:"candy",      sub:"/ˈkændi/", say:WM+"food-3/candy.mp3", zh:"糖果", cat:"食物" },
+  { emoji:"🥕", t:"carrot",     sub:"/ˈkærət/", say:WM+"food-1/carrot.mp3", zh:"紅蘿蔔", cat:"食物" },
+  { emoji:"🍔", t:"hamburger",  sub:"/ˈhæmbɝɡɚ/", say:WM+"food-2/hamburger.mp3", zh:"漢堡", cat:"食物" },
+  // 交通
+  { emoji:"🚌", t:"bus",        sub:"/bʌs/", say:WM+"transportation-2/bus.mp3", zh:"公車", cat:"交通" },
+  { emoji:"🚆", t:"train",      sub:"/treɪn/", say:WM+"1C-5/train.mp3", zh:"火車", cat:"交通" },
+  { emoji:"🚗", t:"car",        sub:"/kɑr/", say:WM+"transportation-2/car.mp3", zh:"汽車", cat:"交通" },
+  { emoji:"🚲", t:"bike",       sub:"/baɪk/", say:WM+"transportation-2/bike.mp3", zh:"腳踏車", cat:"交通" },
+  { emoji:"🏍️", t:"motorcycle", sub:"/ˈmoʊtɚˌsaɪkəl/", say:WM+"transportation-2/motorcycle.mp3", zh:"機車", cat:"交通" },
+  { emoji:"✈️", t:"airplane",   sub:"/ˈɛrˌpleɪn/", say:WM+"transportation-2/airplane.mp3", zh:"飛機", cat:"交通" },
+  { emoji:"🚢", t:"ship",       sub:"/ʃɪp/", say:WM+"transportation-2/ship.mp3", zh:"船", cat:"交通" },
+  { emoji:"🚕", t:"taxi",       sub:"/ˈtæksi/", say:WM+"occupations-5/taxi.mp3", zh:"計程車", cat:"交通" },
+  { emoji:"🚇", t:"subway",     sub:"/ˈsʌbˌweɪ/", say:WM+"transportation-1/subway.mp3", zh:"地鐵", cat:"交通" },
+  { emoji:"🚉", t:"station",    sub:"/ˈsteɪʃən/", say:WM+"transportation-1/station.mp3", zh:"車站", cat:"交通" },
+  { emoji:"🛫", t:"airport",    sub:"/ˈɛrpɔrt/", say:WM+"occupations-5/airport.mp3", zh:"機場", cat:"交通" },
+  { emoji:"🎫", t:"ticket",     sub:"/ˈtɪkɪt/", say:WM+"transportation-2/ticket.mp3", zh:"票", cat:"交通" },
+  { emoji:"🛣️", t:"road",       sub:"/roʊd/", say:WM+"house-1/road.mp3", zh:"路", cat:"交通" },
+  { emoji:"🚒", t:"fire truck", sub:"/ˈfaɪr trʌk/", say:WM+"occupations-4/fire_truck.mp3", zh:"消防車", cat:"交通" },
+  // 動物
+  { emoji:"🐱", t:"cat",        sub:"/kæt/", say:WM+"animals-1/cat.mp3", zh:"貓", cat:"動物" },
+  { emoji:"🐶", t:"dog",        sub:"/dɔɡ/", say:WM+"animals-1/dog.mp3", zh:"狗", cat:"動物" },
+  { emoji:"🐦", t:"bird",       sub:"/bɝd/", say:WM+"animals-1/bird.mp3", zh:"鳥", cat:"動物" },
+  { emoji:"🐴", t:"horse",      sub:"/hɔrs/", say:WM+"animals-1/horse.mp3", zh:"馬", cat:"動物" },
+  { emoji:"🐮", t:"cow",        sub:"/kaʊ/", say:WM+"animals-1/cow.mp3", zh:"牛", cat:"動物" },
+  { emoji:"🐑", t:"sheep",      sub:"/ʃip/", say:WM+"animals-1/sheep.mp3", zh:"綿羊", cat:"動物" },
+  { emoji:"🐷", t:"pig",        sub:"/pɪɡ/", say:WM+"animals-1/pig.mp3", zh:"豬", cat:"動物" },
+  { emoji:"🐔", t:"chicken",    sub:"/ˈtʃɪkən/", say:WM+"animals-1/chicken.mp3", zh:"雞", cat:"動物" },
+  { emoji:"🦆", t:"duck",       sub:"/dʌk/", say:WM+"animals-1/duck.mp3", zh:"鴨子", cat:"動物" },
+  { emoji:"🐰", t:"rabbit",     sub:"/ˈræbɪt/", say:WM+"animals-2/rabbit.mp3", zh:"兔子", cat:"動物" },
+  { emoji:"🦁", t:"lion",       sub:"/ˈlaɪən/", say:WM+"animals-2/lion.mp3", zh:"獅子", cat:"動物" },
+  { emoji:"🐘", t:"elephant",   sub:"/ˈɛləfənt/", say:WM+"animals-1/elephant.mp3", zh:"大象", cat:"動物" },
+  { emoji:"🐻", t:"bear",       sub:"/bɛr/", say:WM+"ABC-orn/bear.mp3", zh:"熊", cat:"動物" },
+  { emoji:"🐵", t:"monkey",     sub:"/ˈmʌŋki/", say:WM+"animals-1/monkey.mp3", zh:"猴子", cat:"動物" },
+  { emoji:"🐢", t:"turtle",     sub:"/ˈtɝtəl/", say:WM+"animals-3/turtle.mp3", zh:"烏龜", cat:"動物" },
+  { emoji:"🐍", t:"snake",      sub:"/sneɪk/", say:WM+"animals-1/snake.mp3", zh:"蛇", cat:"動物" },
+  { emoji:"🐝", t:"bee",        sub:"/bi/", say:WM+"animals-1/bee.mp3", zh:"蜜蜂", cat:"動物" },
+  { emoji:"🦋", t:"butterfly",  sub:"/ˈbʌtɚflaɪ/", say:WM+"animals-2/butterfly.mp3", zh:"蝴蝶", cat:"動物" },
+  { emoji:"🐸", t:"frog",       sub:"/frɑɡ/", say:WM+"animals-1/frog.mp3", zh:"青蛙", cat:"動物" },
+  { emoji:"🐭", t:"mouse",      sub:"/maʊs/", say:WM+"animals-1/mouse.mp3", zh:"老鼠", cat:"動物" },
+  { emoji:"🐯", t:"tiger",      sub:"/ˈtaɪɡɚ/", say:WM+"animals-1/tiger.mp3", zh:"老虎", cat:"動物" },
+  // 自然
+  { emoji:"🌞", t:"sun",        sub:"/sʌn/", say:WM+"space/sun.mp3", zh:"太陽", cat:"自然" },
+  { emoji:"🌕", t:"moon",       sub:"/mun/", say:WM+"space/moon.mp3", zh:"月亮", cat:"自然" },
+  { emoji:"⭐", t:"star",       sub:"/stɑr/", say:WM+"space/star.mp3", zh:"星星", cat:"自然" },
+  { emoji:"🌧️", t:"rain",       sub:"/reɪn/", say:WM+"weather-2/rain.mp3", zh:"雨", cat:"自然" },
+  { emoji:"❄️", t:"snow",       sub:"/snoʊ/", say:WM+"weather-2/snow.mp3", zh:"雪", cat:"自然" },
+  { emoji:"🌬️", t:"wind",       sub:"/wɪnd/", say:WM+"weather-2/wind.mp3", zh:"風", cat:"自然" },
+  { emoji:"☁️", t:"cloud",      sub:"/klaʊd/", say:WM+"weather-2/cloud.mp3", zh:"雲", cat:"自然" },
+  { emoji:"🥵", t:"hot",        sub:"/hɑt/", say:WM+"food-5/hot.mp3", zh:"熱", cat:"自然" },
+  { emoji:"🥶", t:"cold",       sub:"/koʊld/", say:WM+"health-1/cold.mp3", zh:"冷", cat:"自然" },
+  { emoji:"🌤️", t:"sky",        sub:"/skaɪ/", say:WM+"weather-3/sky.mp3", zh:"天空", cat:"自然" },
+  { emoji:"🌊", t:"sea",        sub:"/si/", say:WM+"weather-4/sea.mp3", zh:"海", cat:"自然" },
+  { emoji:"⛰️", t:"mountain",   sub:"/ˈmaʊntən/", say:WM+"weather-4/mountain.mp3", zh:"山", cat:"自然" },
+  { emoji:"🏞️", t:"river",      sub:"/ˈrɪvɚ/", say:WM+"weather-3/river.mp3", zh:"河", cat:"自然" },
+  { emoji:"🌳", t:"tree",       sub:"/tri/", say:WM+"weather-3/tree.mp3", zh:"樹", cat:"自然" },
+  { emoji:"🌸", t:"flower",     sub:"/ˈflaʊɚ/", say:WM+"weather-3/flower.mp3", zh:"花", cat:"自然" },
+  // 顏色
+  { emoji:"🔴", t:"red",        sub:"/rɛd/", say:WM+"colors/red.mp3", zh:"紅色", cat:"顏色" },
+  { emoji:"🔵", t:"blue",       sub:"/blu/", say:WM+"colors/blue.mp3", zh:"藍色", cat:"顏色" },
+  { emoji:"🟢", t:"green",      sub:"/ɡrin/", say:WM+"colors/green.mp3", zh:"綠色", cat:"顏色" },
+  { emoji:"🟡", t:"yellow",     sub:"/ˈjɛloʊ/", say:WM+"colors/yellow.mp3", zh:"黃色", cat:"顏色" },
+  { emoji:"⚪", t:"white",      sub:"/waɪt/", say:WM+"colors/white.mp3", zh:"白色", cat:"顏色" },
+  { emoji:"⚫", t:"black",      sub:"/blæk/", say:WM+"colors/black.mp3", zh:"黑色", cat:"顏色" },
+  { emoji:"🟣", t:"purple",     sub:"/ˈpɝpəl/", say:WM+"colors/purple.mp3", zh:"紫色", cat:"顏色" },
+  { emoji:"🩷", t:"pink",       sub:"/pɪŋk/", say:WM+"colors/pink.mp3", zh:"粉紅色", cat:"顏色" },
+  { emoji:"🟤", t:"brown",      sub:"/braʊn/", say:WM+"colors/brown.mp3", zh:"棕色", cat:"顏色" },
+  { emoji:"🩶", t:"gray",       sub:"/ɡreɪ/", say:WM+"colors/gray.mp3", zh:"灰色", cat:"顏色" },
+  // 數字
+  { emoji:"1️⃣", t:"one",        sub:"/wʌn/", say:WM+"numbers-1/one.mp3", zh:"1", cat:"數字" },
+  { emoji:"2️⃣", t:"two",        sub:"/tu/", say:WM+"numbers-1/two.mp3", zh:"2", cat:"數字" },
+  { emoji:"3️⃣", t:"three",      sub:"/θri/", say:WM+"numbers-1/three.mp3", zh:"3", cat:"數字" },
+  { emoji:"4️⃣", t:"four",       sub:"/fɔr/", say:WM+"numbers-1/four.mp3", zh:"4", cat:"數字" },
+  { emoji:"5️⃣", t:"five",       sub:"/faɪv/", say:WM+"numbers-1/five.mp3", zh:"5", cat:"數字" },
+  { emoji:"6️⃣", t:"six",        sub:"/sɪks/", say:WM+"numbers-1/six.mp3", zh:"6", cat:"數字" },
+  { emoji:"7️⃣", t:"seven",      sub:"/ˈsɛv.ən/", say:WM+"numbers-1/seven.mp3", zh:"7", cat:"數字" },
+  { emoji:"8️⃣", t:"eight",      sub:"/eɪt/", say:WM+"numbers-1/eight.mp3", zh:"8", cat:"數字" },
+  { emoji:"9️⃣", t:"nine",       sub:"/naɪn/", say:WM+"numbers-1/nine.mp3", zh:"9", cat:"數字" },
+  { emoji:"🔟", t:"ten",        sub:"/tɛn/", say:WM+"numbers-1/ten.mp3", zh:"10", cat:"數字" },
+  // 家人
+  { emoji:"👩", t:"mom",        sub:"/mɑm/", say:WM+"family-friends-1/mom.mp3", zh:"媽媽", cat:"家人" },
+  { emoji:"👨", t:"dad",        sub:"/dæd/", say:WM+"family-friends-1/dad.mp3", zh:"爸爸", cat:"家人" },
+  { emoji:"👵", t:"grandma",    sub:"/ˈɡræn.mɑ/", say:WM+"family-friends-1/grandma.mp3", zh:"奶奶 / 外婆", cat:"家人" },
+  { emoji:"👴", t:"grandpa",    sub:"/ˈɡræn.pɑ/", say:WM+"family-friends-1/grandpa.mp3", zh:"爺爺 / 外公", cat:"家人" },
+  { emoji:"👶", t:"baby",       sub:"/ˈbeɪ.bi/", say:WM+"family-friends-1/baby.mp3", zh:"寶寶", cat:"家人" },
+  { emoji:"👦", t:"boy",        sub:"/bɔɪ/", say:WM+"family-friends-1/boy.mp3", zh:"男孩", cat:"家人" },
+  { emoji:"👧", t:"girl",       sub:"/ɡɝl/", say:WM+"family-friends-1/girl.mp3", zh:"女孩", cat:"家人" },
+  { emoji:"👬", t:"brother",    sub:"/ˈbrʌð.ər/", say:WM+"family-friends-1/brother.mp3", zh:"兄弟", cat:"家人" },
+  { emoji:"👭", t:"sister",     sub:"/ˈsɪs.tər/", say:WM+"family-friends-1/sister.mp3", zh:"姊妹", cat:"家人" },
+  { emoji:"🤝", t:"friend",     sub:"/frɛnd/", say:WM+"family-friends-1/friend.mp3", zh:"朋友", cat:"家人" },
+  { emoji:"🧑‍🏫", t:"teacher",   sub:"/ˈtitʃɚ/", say:WM+"occupations-4/teacher.mp3", zh:"老師", cat:"家人" },
+  { emoji:"🧑‍⚕️", t:"doctor",    sub:"/ˈdɑktɚ/", say:WM+"health-1/doctor.mp3", zh:"醫生", cat:"家人" },
+  // 地點
+  { emoji:"🏠", t:"home",       sub:"/hoʊm/", say:WM+"house-1/home.mp3", zh:"家", cat:"地點" },
+  { emoji:"🏫", t:"school",     sub:"/skul/", say:WM+"school-1/school.mp3", zh:"學校", cat:"地點" },
+  { emoji:"🚻", t:"bathroom",   sub:"/ˈbæθrum/", say:WM+"house-1/bathroom.mp3", zh:"廁所 / 浴室", cat:"地點" },
+  { emoji:"🛋️", t:"bedroom",    sub:"/ˈbɛdrum/", say:WM+"house-1/bedroom.mp3", zh:"臥室", cat:"地點" },
+  { emoji:"🛏️", t:"bed",        sub:"/bɛd/", say:WM+"house-2/bed.mp3", zh:"床", cat:"地點" },
+  { emoji:"🚪", t:"door",       sub:"/dɔr/", say:WM+"house-1/door.mp3", zh:"門", cat:"地點" },
+  { emoji:"🪟", t:"window",     sub:"/ˈwɪndoʊ/", say:WM+"house-1/window.mp3", zh:"窗戶", cat:"地點" },
+  { emoji:"🌲", t:"park",       sub:"/pɑrk/", say:WM+"1B-2/park.mp3", zh:"公園", cat:"地點" },
+  { emoji:"🏖️", t:"beach",      sub:"/bitʃ/", say:WM+"places-2/beach.mp3", zh:"海灘", cat:"地點" },
+  { emoji:"🍽️", t:"restaurant", sub:"/ˈrɛstərənt/", say:WM+"places-3/restaurant.mp3", zh:"餐廳", cat:"地點" },
+  { emoji:"🏨", t:"hotel",      sub:"/hoʊˈtɛl/", say:WM+"places-2/hotel.mp3", zh:"旅館", cat:"地點" },
+  { emoji:"🏪", t:"store",      sub:"/stɔr/", say:WM+"places-3/store.mp3", zh:"商店", cat:"地點" },
+  { emoji:"🦒", t:"zoo",        sub:"/zu/", say:WM+"animals-1/zoo.mp3", zh:"動物園", cat:"地點" },
+  { emoji:"📚", t:"library",    sub:"/ˈlaɪbrɛri/", say:WM+"school-1/library.mp3", zh:"圖書館", cat:"地點" },
+  { emoji:"🏥", t:"hospital",   sub:"/ˈhɑspɪtəl/", say:WM+"health-2/hospital.mp3", zh:"醫院", cat:"地點" },
+  // 身體
+  { emoji:"👤", t:"head",       sub:"/hɛd/", say:WM+"body-and-face-1/head.mp3", zh:"頭", cat:"身體" },
+  { emoji:"👁️", t:"eye",        sub:"/aɪ/", say:WM+"body-and-face-1/eye.mp3", zh:"眼睛", cat:"身體" },
+  { emoji:"👃", t:"nose",       sub:"/noʊz/", say:WM+"body-and-face-1/nose.mp3", zh:"鼻子", cat:"身體" },
+  { emoji:"👄", t:"mouth",      sub:"/maʊθ/", say:WM+"body-and-face-1/mouth.mp3", zh:"嘴巴", cat:"身體" },
+  { emoji:"👂", t:"ear",        sub:"/ɪr/", say:WM+"body-and-face-1/ear.mp3", zh:"耳朵", cat:"身體" },
+  { emoji:"✋", t:"hand",       sub:"/hænd/", say:WM+"1A-1/hand.mp3", zh:"手", cat:"身體" },
+  { emoji:"🦶", t:"foot",       sub:"/fʊt/", say:WM+"body-and-face-1/foot.mp3", zh:"腳", cat:"身體" },
+  { emoji:"❤️", t:"heart",      sub:"/hɑrt/", say:WM+"body-and-face-3/heart.mp3", zh:"心", cat:"身體" },
+  { emoji:"🦷", t:"tooth",      sub:"/tuθ/", say:WM+"body-and-face-2/tooth.mp3", zh:"牙齒", cat:"身體" },
+  { emoji:"🦵", t:"knee",       sub:"/ni/", say:WM+"body-and-face-2/knee.mp3", zh:"膝蓋", cat:"身體" },
+  // 時間
+  { emoji:"📅", t:"today",      sub:"/təˈdeɪ/", say:WM+"time-2/today.mp3", zh:"今天", cat:"時間" },
+  { emoji:"⏭️", t:"tomorrow",   sub:"/təˈmɔroʊ/", say:WM+"time-2/tomorrow.mp3", zh:"明天", cat:"時間" },
+  { emoji:"⏮️", t:"yesterday",  sub:"/ˈjɛstɚdeɪ/", say:WM+"time-2/yesterday.mp3", zh:"昨天", cat:"時間" },
+  { emoji:"🌅", t:"morning",    sub:"/ˈmɔrnɪŋ/", say:WM+"time-2/morning.mp3", zh:"早上", cat:"時間" },
+  { emoji:"🌙", t:"night",      sub:"/naɪt/", say:WM+"time-2/night.mp3", zh:"晚上", cat:"時間" },
+  { emoji:"☀️", t:"day",        sub:"/deɪ/", say:WM+"time-2/day.mp3", zh:"白天 / 日子", cat:"時間" },
+  { emoji:"🗓️", t:"week",       sub:"/wik/", say:WM+"time-3/week.mp3", zh:"星期", cat:"時間" },
+];
+
+// ── 拼讀規則（list = 直接指定哪些字；except = 不算這條規則的字）──
+const phonics = [
+  { id:"short", label:"短母音 CVC", sound:"/æ/ /e/ /ɪ/ /ɑː/ /ʌ/", note:"子音－母音－子音的短字，母音念短音：cat、bed、pig、hot、bus", re:/[aeiou]/g,
+    list:["cat","dog","pig","bus","sun","hot","red","bed","egg","fish","milk","duck","black","ship","ten","six","dad","mom","hand","frog","wind","pink"] },
+  { id:"magic-e", label:"magic e", sound:"長母音", note:"字尾的 e 不發音，讓前面的母音念字母名：cake /eɪ/、bike /aɪ/、home /oʊ/", re:/[aeiou][^aeiou\s]e(?=s?$)/g, except:["juice","cheese","store","fire truck","horse","chocolate","mouse","one","eye"] },
+  { id:"ee", label:"ee / ea", sound:"/iː/", note:"ee 和 ea 通常念長音 /iː/；ea 也有例外，像 bread、head", re:/ee|ea/g, except:["bear","bread","head","heart","ear"] },
+  { id:"ai", label:"ai / ay", sound:"/eɪ/", note:"ai 在字中、ay 在字尾，都念 /eɪ/", re:/ai|ay/g, except:["airplane","airport","mountain"] },
+  { id:"oa", label:"oa / ow", sound:"/oʊ/", note:"oa 和 ow 念 /oʊ/；ow 也可能念 /aʊ/（cow）", re:/oa|ow/g, except:["cow","brown","flower"] },
+  { id:"ou", label:"ou / ow", sound:"/aʊ/", note:"ou 和 ow 念 /aʊ/，像被捏到的「ㄠ」", re:/ou|ow/g, except:["snow","yellow","window","tomorrow","four"] },
+  { id:"oo", label:"oo", sound:"/uː/ 或 /ʊ/", note:"大多念長的 /uː/（moon）；少數念短的 /ʊ/（cookie、foot）", re:/oo/g },
+  { id:"r", label:"ar or er ir ur", sound:"r 控制母音", note:"母音後面接 r，母音會改變：ar /ɑːr/、or /ɔːr/、er ir ur /ɝː/ /ɚ/", re:/[aeiou]r/g, except:["airplane","airport","carrot","tomorrow","library","strawberry"] },
+  { id:"sh", label:"sh", sound:"/ʃ/", note:"sh 念 /ʃ/，嘴唇嘟起來", re:/sh/g },
+  { id:"ch", label:"ch / tch", sound:"/tʃ/", note:"ch 念 /tʃ/", re:/t?ch/g, except:["school"] },
+  { id:"th", label:"th", sound:"/θ/ /ð/", note:"舌尖輕放在上下齒之間；three 無聲，brother 有聲", re:/th/g },
+  { id:"ck", label:"ck", sound:"/k/", note:"短母音後面的 /k/ 常寫成 ck", re:/ck/g },
+  { id:"ng", label:"ng / nk", sound:"/ŋ/ /ŋk/", note:"ng 念 /ŋ/，nk 念 /ŋk/", re:/ng|nk/g, except:["orange"] },
+  { id:"soft", label:"軟 c / 軟 g", sound:"/s/ /dʒ/", note:"c 遇到 e、i、y 念 /s/；g 遇到 e、i、y 常念 /dʒ/", re:/c[eiy]|g[eiy]/g, except:["tiger","hamburger","girl"] },
+  { id:"y", label:"字尾 y", sound:"/i/ 或 /aɪ/", note:"長一點的字念 /i/（baby）；短字念 /aɪ/（sky）", re:/y$/g, except:["today","yesterday","day","gray","subway","boy"] },
+  { id:"silent", label:"不發音字母", sound:"不念", note:"kn 的 k、igh 的 gh 不發音：knee、night", re:/^kn|gh/g },
+];
+
+
+// ============================================================
+//  單元定義
+// ============================================================
+const units = [
+  { id:"alphabet", name:"字母與發音", data:alphabet },
+  { id:"words",    name:"基本單字",   data:words },
+  { id:"vocab",    name:"基本用語",   data:phrases },
+  { id:"dialog",   name:"小對話",     data:dialogs },
+];
+
+let currentUnit = "alphabet";
+let currentMode = "browse";
+let currentFilter = null;   // 拼讀規則
+let currentCat = null;      // 單字分類
+let phonicsOpen = false;    // 拼讀按鈕是否展開
+const categories = [...new Set(words.map(w => w.cat))];
+
+// ── 篩選工具 ──
+function phonicsRule() { return phonics.find(p => p.id === currentFilter); }
+const ruleField = rule => rule.on || 't';   // 規則比對哪一行：t（主文字）或 sub（拼音）
+function matchRule(w, rule) {
+  const text = w[ruleField(rule)] || '';
+  if (rule.except && rule.except.includes(text)) return false;
+  if (rule.list) return rule.list.includes(text);
+  rule.re.lastIndex = 0; const ok = rule.re.test(text); rule.re.lastIndex = 0; return ok;
+}
+function filteredWords() {
+  const r = phonicsRule();
+  return words.filter(w => (!currentCat || w.cat === currentCat) && (!r || matchRule(w, r)));
+}
+function hl(word, field = 't') {
+  const r = phonicsRule();
+  if (!r || !word || ruleField(r) !== field) return word;
+  return word.replace(r.re, (m, a, b) => r.grp ? `${a}<mark>${b}</mark>` : `<mark>${m}</mark>`);
+}
+// 測驗用的資料：基本單字頁會跟著篩選
+function quizData() {
+  return currentUnit === 'words' ? filteredWords() : units.find(u => u.id === currentUnit).data;
+}
+const sayOf = x => x.say || x.t;
+
+// ── 口音切換（只有設定 VARIANTS 的語言才有，例如西班牙文）──
+const VARIANTS = null;
+let variant = VARIANTS ? VARIANTS[0].id : null;
+try { const v = localStorage.getItem('variant-en-US'); if (VARIANTS && VARIANTS.some(x => x.id === v)) variant = v; } catch (e) {}
+const subOf = x => (variant && x['sub_' + variant]) || x.sub;
+const ipaOf = a => (variant && a['ipa_' + variant]) || a.ipa;
+function renderVariantBar() {
+  const bar = document.getElementById('variant-bar');
+  if (!VARIANTS) { bar.style.display = 'none'; return; }
+  bar.innerHTML = '口音：' + VARIANTS.map(v =>
+    `<button class="chip sm${v.id === variant ? ' active' : ''}" data-variant="${v.id}">${v.label}</button>`).join('');
+  bar.querySelectorAll('[data-variant]').forEach(b => b.addEventListener('click', () => {
+    variant = b.dataset.variant;
+    try { localStorage.setItem('variant-en-US', variant); } catch (e) {}
+    renderVariantBar(); renderContent();
+  }));
+}
+
+// ── TTS ──
+let currentAudio = null;
+function speak(text) {
+  if (!text) return;
+  // 錄音檔（台語版用教育部辭典的真人錄音）
+  if (/^https?:\/\//.test(text)) {
+    if (currentAudio) currentAudio.pause();
+    currentAudio = new Audio(text);
+    currentAudio.play().catch(() => {});
+    return;
+  }
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const vv = VARIANTS ? VARIANTS.find(x => x.id === variant) : null;
+  const langs = vv ? vv.voices : ['en-US'];
+  u.lang = langs[0];
+  u.rate = 0.85;
+  const voices = speechSynthesis.getVoices().map(v => ({ v, l: v.lang.replace('_', '-') }));
+  const hit = langs.map(l => voices.find(x => x.l === l)).find(Boolean)
+           || voices.find(x => x.l.startsWith('en-US'));
+  if (hit) u.voice = hit.v;
+  speechSynthesis.speak(u);
+}
+if ('speechSynthesis' in window) {
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+// ── Render Unit Tabs ──
+function renderUnitTabs() {
+  const bar = document.getElementById('unit-bar');
+  bar.innerHTML = units.map(u =>
+    `<button class="unit-btn${u.id === currentUnit ? ' active' : ''}" data-unit="${u.id}">${u.name}</button>`
+  ).join('');
+  bar.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentUnit = btn.dataset.unit;
+      renderUnitTabs();
+      renderContent();
+    });
+  });
+}
+
+// ── Update Counter ──
+function updateCounter() {
+  const u = units.find(u => u.id === currentUnit);
+  if (currentUnit === 'words') {
+    const r = phonicsRule();
+    const tags = [currentCat, r && r.label].filter(Boolean).join('・');
+    document.getElementById('counter').textContent =
+      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+  } else {
+    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+  }
+}
+
+function renderContent() {
+  updateCounter();
+  if (currentMode === 'browse') renderBrowse();
+  else startQuiz();
+}
+
+const subLine = x => subOf(x) ? `<div class="sub">${hl(subOf(x), 'sub')}</div>` : '';
+
+// ── BROWSE ──
+function renderBrowse() {
+  const grid = document.getElementById('browse-view');
+  const quizEl = document.getElementById('quiz-view');
+  grid.style.display = '';
+  quizEl.style.display = 'none';
+
+  if (currentUnit === 'alphabet') {
+    grid.className = 'grid alpha-table';
+    grid.innerHTML = alphabet.map(a => `
+      <div class="alpha-row${a.note ? ' has-note' : ''}">
+        <div class="al-letter" data-speak="${a.say || a.name}">${a.letter}</div>
+        <div class="al-name" data-speak="${a.soundSay || a.say || a.name}">
+          <div class="al-main">${a.sound || a.name}</div>
+          ${a.note ? `<div class="al-sub">${a.note}</div>` : ''}
+        </div>
+        <div class="al-word" data-speak="${a.wordSay || a.word}">
+          <div class="al-main">${a.word}</div>
+          <div class="al-sub">${a.zh}</div>
+        </div>
+      </div>`).join('');
+  }
+  else if (currentUnit === 'vocab') {
+    grid.className = 'grid';
+    grid.innerHTML = phrases.map(p => `
+      <div class="card" data-speak="${sayOf(p)}">
+        <button class="speak" data-speak="${sayOf(p)}" aria-label="播放">🔊</button>
+        <div class="main" style="font-size:1.1rem">${p.t}</div>
+        ${subLine(p)}
+        <div class="desc">${p.zh}</div>
+        ${p.note ? `<div class="rule-note">${p.note}</div>` : ''}
+      </div>`).join('');
+  }
+  else if (currentUnit === 'words') {
+    grid.className = 'grid';
+    const r = phonicsRule();
+    // 分類按鈕
+    const catChips = `
+      <div class="chips">
+        <button class="chip${!currentCat ? ' active' : ''}" data-cat="">全部</button>
+        ${categories.map(c => `<button class="chip${currentCat === c ? ' active' : ''}" data-cat="${c}">${c}</button>`).join('')}
+      </div>`;
+    // 拼讀按鈕（可折疊；沒有規則的語言就不顯示）
+    const phonicsChips = !phonics.length ? '' : `
+      <div class="chips">
+        <button class="toggle" data-toggle="1">拼讀規則 ${phonicsOpen ? '▾' : '▸'}${r && !phonicsOpen ? `：${r.label}` : ''}</button>
+        ${phonicsOpen ? `
+          <button class="chip sm${!r ? ' active' : ''}" data-filter="">不篩選</button>
+          ${phonics.map(p => `<button class="chip sm${r && r.id === p.id ? ' active' : ''}" data-filter="${p.id}">${p.label}</button>`).join('')}` : ''}
+      </div>
+      ${r ? `<div class="rule-box"><b>${r.label}</b>　${r.sound}<div>${r.note}</div></div>` : ''}`;
+    const list = filteredWords();
+    grid.innerHTML = catChips + phonicsChips + (list.length ? '' : `<div class="quiz-msg" style="grid-column:1/-1">這個分類裡沒有符合這條規則的字。</div>`) + list.map(w => `
+      <div class="card" data-speak="${sayOf(w)}">
+        <button class="speak" data-speak="${sayOf(w)}" aria-label="播放">🔊</button>
+        <div class="sub" style="margin-bottom:0.2rem">${w.cat}</div>
+        <div class="emoji">${w.emoji}</div>
+        <div class="main" style="font-size:1.15rem">${hl(w.t)}</div>
+        ${subLine(w)}
+        <div class="desc">${w.zh}</div>
+      </div>`).join('');
+  }
+  else {
+    grid.className = 'grid dialog-grid';
+    grid.innerHTML = dialogs.map(d => `
+      <div class="dialog-card">
+        <h3>${d.title}</h3>
+        ${d.lines.map(l => `
+          <div class="line" data-speak="${sayOf(l)}">
+            <span class="who">${l.who}</span>
+            <span class="it">${l.t}</span>
+            ${l.sub ? `<span class="zh">${l.sub}</span>` : ''}
+            <span class="zh">${l.zh}</span>
+          </div>`).join('')}
+      </div>`).join('');
+  }
+}
+
+// 事件委派：篩選按鈕 / 點任何帶 data-speak 的元素就發音
+document.getElementById('browse-view').addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle]');
+  const c = e.target.closest('[data-cat]');
+  const f = e.target.closest('[data-filter]');
+  if (t || c || f) {
+    if (t) phonicsOpen = !phonicsOpen;
+    if (c) currentCat = c.dataset.cat || null;
+    if (f) currentFilter = f.dataset.filter || null;
+    updateCounter();
+    renderBrowse();
+    return;
+  }
+  const el = e.target.closest('[data-speak]');
+  if (el) speak(el.dataset.speak);
+});
+
+// ── QUIZ ──
+let quizOrder = [];
+let quizIdx = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const grid = document.getElementById('browse-view');
+  const quizEl = document.getElementById('quiz-view');
+  grid.style.display = 'none';
+  quizEl.style.display = 'block';
+
+  if (currentUnit === 'dialog') {
+    quizEl.innerHTML = `<div class="quiz-msg">對話單元請切換到「瀏覽」模式，點每一行就能聽發音、跟著念。</div>`;
+    return;
+  }
+  quizOrder = shuffle(quizData().map((_, i) => i));
+  quizIdx = 0;
+  renderQuizCard();
+}
+
+function itemSpeech(item) {
+  return currentUnit === 'alphabet' ? (item.say || item.name) : sayOf(item);
+}
+
+function renderQuizCard() {
+  const container = document.getElementById('quiz-view');
+  const data = quizData();
+
+  if (quizIdx >= quizOrder.length) {
+    container.innerHTML = `
+      <div class="flashcard">
+        <div class="fc-front">
+          <div class="prompt">🎉 全部完成！</div>
+          <div class="tap-hint">太棒了</div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="q-btn pri" onclick="startQuiz()">再來一輪</button>
+      </div>`;
+    return;
+  }
+
+  const item = data[quizOrder[quizIdx]];
+  let frontHTML, backHTML;
+
+  if (currentUnit === 'alphabet') {
+    frontHTML = `<div class="prompt">${item.name}</div><div class="tap-hint">這是哪個字母？點擊翻牌</div>`;
+    backHTML = `
+      <div class="ans-main">${item.letter}</div>
+      <div class="ans-sub">${ipaOf(item)}</div>
+      <div class="ans-desc">${item.word}（${item.zh}）</div>`;
+  }
+  else {
+    const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
+    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">英文怎麼說？點擊翻牌</div>`;
+    backHTML = `${em}
+      <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
+      ${subOf(item) ? `<div class="ans-sub">${currentUnit === 'words' ? hl(subOf(item), 'sub') : subOf(item)}</div>` : ''}
+      <div class="ans-desc">${item.zh}</div>
+      ${item.note ? `<div class="ans-note">${item.note}</div>` : ''}`;
+  }
+  const speakText = itemSpeech(item);
+
+  container.innerHTML = `
+    <div class="flashcard" id="fc" onclick="revealCard()">
+      <div class="fc-front">${frontHTML}</div>
+      <div class="fc-back">
+        ${backHTML}
+        <button class="speak-circle" id="fc-speak" aria-label="播放">🔊</button>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="q-btn sec" onclick="startQuiz()">🔀 重新洗牌</button>
+      <button class="q-btn pri" onclick="nextCard()">下一張 →</button>
+    </div>
+    <div class="progress-text">${quizIdx + 1} / ${quizOrder.length}</div>`;
+
+  document.getElementById('fc-speak').addEventListener('click', e => {
+    e.stopPropagation();
+    speak(speakText);
+  });
+}
+
+function revealCard() {
+  const fc = document.getElementById('fc');
+  if (fc && !fc.classList.contains('revealed')) {
+    fc.classList.add('revealed');
+    speak(itemSpeech(quizData()[quizOrder[quizIdx]]));
+  }
+}
+
+function nextCard() {
+  quizIdx++;
+  renderQuizCard();
+}
+
+// ── Mode Switching ──
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentMode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.mode === currentMode)
+    );
+    renderContent();
+  });
+});
+
+// ── Init ──
+renderVariantBar();
+renderUnitTabs();
+renderContent();
+
+</script>
+</body>
+</html>

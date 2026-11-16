@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Gâu-tsá！台語學習卡</title>
+<!-- 芫荽 Iansui：台羅的附加符號（n̄、o͘、a̍）和台語漢字才會正常顯示 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Iansui&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:#FAF6EF;color:#2C2C2C;
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── Header ── */
+.header{
+  background:#2E6B5E;color:#FAF6EF;
+  text-align:center;padding:1.6rem 1rem 1.2rem;
+}
+.header h1{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:1.9rem;font-weight:400;letter-spacing:0.06em;
+}
+.header .subtitle{font-size:0.8rem;opacity:0.6;margin-top:0.2rem}
+
+/* ── Unit Tabs ── */
+.unit-bar{
+  display:flex;gap:0;justify-content:center;
+  padding:1rem 0.6rem 0.3rem;flex-wrap:wrap;
+}
+.unit-btn{
+  padding:0.45rem 1rem;
+  border:2px solid #2E6B5E;border-right:none;
+  background:transparent;color:#2E6B5E;
+  font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;font-family:inherit;
+  white-space:nowrap;
+}
+.unit-btn:last-child{border-right:2px solid #2E6B5E}
+.unit-btn:first-child{border-radius:6px 0 0 6px}
+.unit-btn:last-child{border-radius:0 6px 6px 0}
+.unit-btn.active{background:#2E6B5E;color:#FAF6EF}
+
+/* ── Mode Toggle ── */
+.mode-bar{
+  display:flex;justify-content:center;
+  padding:0.6rem 1rem 0.5rem;
+}
+.mode-btn{
+  padding:0.4rem 1.4rem;
+  border:1.5px solid #9B8E7B;
+  background:transparent;color:#9B8E7B;
+  font-size:0.82rem;cursor:pointer;
+  transition:all 0.2s;font-family:inherit;
+}
+.mode-btn:first-child{border-radius:5px 0 0 5px}
+.mode-btn:last-child{border-radius:0 5px 5px 0;border-left:none}
+.mode-btn.active{background:#9B8E7B;color:#fff}
+
+/* ── Browse Grid ── */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:0.8rem;padding:0.8rem 1rem;
+  max-width:760px;margin:0 auto;
+}
+.grid.dialog-grid{grid-template-columns:1fr;max-width:620px}
+
+/* ── Alphabet table（字母｜字母名｜字母音｜例字 並列）── */
+.grid.alpha-table{
+  display:flex;flex-direction:column;gap:0.9rem;
+  max-width:720px;
+}
+.alpha-row{
+  display:grid;grid-template-columns:72px 1fr 1.3fr;
+  align-items:center;gap:0.6rem;
+}
+.al-ipa{font-size:1rem;color:#9B8E7B;line-height:1.4;margin-top:0.15rem}
+.alpha-row{
+  background:#fff;border-radius:14px;padding:1.1rem 1rem;
+  box-shadow:0 4px 14px rgba(46,107,94,0.09);
+}
+.alpha-row.has-note{background:#F7F3EC}
+.alpha-row > div{
+  cursor:pointer;border-radius:6px;padding:0.25rem 0.3rem;
+  transition:background 0.15s;
+}
+.alpha-row > div:hover,.alpha-row > div:active{background:#F3EEE4}
+.al-letter{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:2.8rem;color:#2E6B5E;text-align:center;
+}
+.al-main{font-size:1.15rem;color:#2C2C2C;line-height:1.3}
+.al-sub{font-size:0.75rem;color:#9B8E7B;font-style:italic;line-height:1.3}
+.al-word .al-main{color:#2E6B5E}
+@media(max-width:420px){
+  .alpha-row{grid-template-columns:56px 1fr 1.3fr;gap:0.4rem}
+  .al-letter{font-size:2.3rem}
+  .al-main{font-size:1.05rem}
+}
+
+.card{
+  background:#fff;border-radius:10px;
+  padding:1rem 0.7rem 0.9rem;text-align:center;
+  box-shadow:0 2px 10px rgba(46,107,94,0.07);
+  cursor:pointer;transition:transform 0.15s;position:relative;
+}
+.card:active{transform:scale(0.97)}
+
+.card .main{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:1.3rem;color:#2E6B5E;line-height:1.3;margin-bottom:0.2rem;
+}
+.card.alpha-card .main{font-size:1.8rem;margin-bottom:0.1rem}
+/* ── 拼讀篩選 ── */
+.chips{
+  grid-column:1/-1;display:flex;flex-wrap:wrap;gap:0.4rem;
+  align-items:center;padding:0.2rem 0 0.3rem;
+}
+.chips-label{font-size:0.78rem;color:#9B8E7B;margin-right:0.2rem}
+.chip{
+  padding:0.32rem 0.75rem;border-radius:999px;
+  border:1.5px solid #2E6B5E;background:#fff;color:#2E6B5E;
+  font-size:0.82rem;cursor:pointer;font-family:inherit;
+}
+.chip.active{background:#2E6B5E;color:#FAF6EF}
+.rule-box{
+  grid-column:1/-1;background:#FFF6E0;border-radius:10px;
+  padding:0.7rem 0.9rem;font-size:0.88rem;color:#555;line-height:1.5;
+}
+.rule-box b{color:#2E6B5E;font-size:1rem}
+mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
+.card .emoji{font-size:2.2rem;line-height:1.2;margin:0.1rem 0 0.25rem}
+.card .sub{font-size:0.82rem;color:#9B8E7B;font-style:italic;margin-bottom:0.3rem}
+.card .desc{font-size:0.88rem;color:#666}
+.card .sound{font-size:0.85rem;color:#444;margin-top:0.3rem}
+.card .word{font-size:0.85rem;color:#2E6B5E;margin-top:0.3rem}
+.card .rule-note{font-size:0.72rem;color:#b3a694;margin-top:0.25rem}
+
+.card .speak{
+  position:absolute;top:5px;right:7px;
+  background:none;border:none;font-size:1rem;
+  cursor:pointer;opacity:0.3;transition:opacity 0.2s;padding:3px;
+}
+.card .speak:hover,.card .speak:active{opacity:0.9}
+
+/* ── Dialogue ── */
+.dialog-card{
+  background:#fff;border-radius:10px;padding:0.9rem 0.8rem;
+  box-shadow:0 2px 10px rgba(46,107,94,0.07);
+}
+.dialog-card h3{
+  font-family:Georgia,'Times New Roman',serif;font-weight:400;
+  font-size:1.1rem;color:#2E6B5E;margin-bottom:0.5rem;
+}
+.line{
+  display:grid;grid-template-columns:auto 1fr;
+  column-gap:0.7rem;row-gap:0.1rem;
+  padding:0.5rem 0.4rem;border-radius:8px;cursor:pointer;
+  transition:background 0.15s;
+}
+.line:hover,.line:active{background:#F3EEE4}
+.line .who{grid-row:span 2;color:#9B8E7B;font-weight:bold;align-self:center}
+.line .it{color:#2E6B5E;font-size:1rem}
+.line .zh{color:#777;font-size:0.85rem}
+
+/* ── Quiz Mode ── */
+.quiz{
+  max-width:380px;margin:0.4rem auto;
+  padding:0 1rem 2rem;text-align:center;
+}
+.flashcard{
+  background:#fff;border-radius:14px;
+  padding:2.5rem 1.5rem;
+  box-shadow:0 4px 24px rgba(46,107,94,0.08);
+  min-height:220px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  cursor:pointer;user-select:none;-webkit-user-select:none;
+}
+.flashcard:active{box-shadow:0 2px 12px rgba(46,107,94,0.12)}
+
+.fc-front .prompt{font-size:1.7rem;color:#444;margin-bottom:0.4rem}
+.fc-front .tap-hint{font-size:0.78rem;color:#bbb}
+.fc-front .fc-note{font-size:0.78rem;color:#aaa;margin-top:0.3rem}
+
+.fc-back{display:none;flex-direction:column;align-items:center}
+.flashcard.revealed .fc-front{display:none}
+.flashcard.revealed .fc-back{display:flex}
+
+.fc-back .ans-main{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:2rem;color:#2E6B5E;margin-bottom:0.2rem;
+}
+.fc-back .ans-sub{font-size:1rem;color:#9B8E7B;font-style:italic;margin-bottom:0.2rem}
+.fc-back .ans-desc{font-size:0.95rem;color:#888;margin-bottom:0.3rem}
+.fc-back .ans-note{font-size:0.78rem;color:#b3a694;margin-bottom:0.6rem}
+
+.speak-circle{
+  width:42px;height:42px;border-radius:50%;
+  background:#2E6B5E;color:#FAF6EF;border:none;
+  font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.15s;
+}
+.speak-circle:active{transform:scale(0.9)}
+
+.quiz-nav{display:flex;justify-content:center;gap:0.7rem;margin-top:1rem}
+.q-btn{
+  padding:0.5rem 1.3rem;border:none;border-radius:8px;
+  font-size:0.88rem;cursor:pointer;font-family:inherit;transition:all 0.15s;
+}
+.q-btn.pri{background:#2E6B5E;color:#fff}
+.q-btn.pri:active{background:#22524A}
+.q-btn.sec{background:#E6E0D6;color:#555}
+.q-btn.sec:active{background:#d9d2c7}
+.progress-text{margin-top:0.8rem;font-size:0.78rem;color:#aaa}
+.quiz-msg{font-size:0.9rem;color:#777;padding:2rem 0.5rem}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:1.2rem 1rem;font-size:0.72rem;color:#ccc}
+
+@media(max-width:420px){
+  .header h1{font-size:1.5rem}
+  .unit-btn{padding:0.4rem 0.7rem;font-size:0.78rem}
+  .grid{grid-template-columns:repeat(2,1fr);gap:0.6rem;padding:0.7rem}
+  .grid.dialog-grid{grid-template-columns:1fr}
+  .card .main{font-size:1.15rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.chip.sm{padding:0.26rem 0.65rem;font-size:0.78rem}
+.variant-bar{display:flex;justify-content:center;align-items:center;gap:0.4rem;padding:0.8rem 1rem 0;font-size:0.8rem;color:#9B8E7B}
+.footer a{color:inherit}
+.rule-audio{margin-top:0.5rem}
+.al-letter.long{font-size:1.7rem !important;white-space:nowrap}
+.toggle{
+  padding:0.32rem 0.8rem;border-radius:999px;border:1.5px dashed #9B8E7B;
+  background:transparent;color:#7a6e5d;font-size:0.82rem;cursor:pointer;font-family:inherit;
+}
+body{font-family:system-ui,-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei','MingLiU-ExtB','PMingLiU-ExtB','Noto Sans CJK TC','Noto Sans TC',sans-serif}
+/* 全頁改用芫荽 Iansui（含標題、大字母、卡片主字） */
+body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-family:'Iansui','PingFang TC','Microsoft JhengHei',sans-serif}</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Gâu-tsá！</h1>
+  <p class="subtitle" id="counter"></p>
+</div>
+
+<div class="variant-bar" id="variant-bar"></div>
+<div class="unit-bar" id="unit-bar"></div>
+
+<div class="mode-bar">
+  <button class="mode-btn active" data-mode="browse">瀏覽</button>
+  <button class="mode-btn" data-mode="quiz">測驗</button>
+</div>
+
+<div id="browse-view" class="grid"></div>
+<div id="quiz-view" class="quiz" style="display:none"></div>
+
+<div class="footer">台語學習卡 — 點擊卡片播放發音<br>台羅與錄音：<a href="https://sutian.moe.edu.tw/" target="_blank" rel="noopener">教育部《臺灣台語常用詞辭典》</a>（CC BY-ND 3.0 TW）<br>字母與聲調錄音：<a href="https://tailo.moe.edu.tw/" target="_blank" rel="noopener">教育部臺灣台語羅馬字拼音教學網</a></div>
+
+<script>
+// ============================================================
+//  📝 資料區 — 擴充只要在對應陣列加一行就好
+//  t = 目標語言文字；sub = 第二行（IPA / 漢字・拼音）；say = 給語音念的文字（沒有就念 t）
+// ============================================================
+// ── 單元一：台羅字母（聲母、母音、韻尾）。點字母聽符號本身，點例字聽例字 ──
+const alphabet = [
+  { letter:"p", name:"p", ipa:"/p/ · ㄅ", say:"https://tailo.moe.edu.tw/pin1/mp3/01_p.mp3", word:"飯 pn̄g", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9222.mp3" },
+  { letter:"ph", name:"ph", ipa:"/pʰ/ · ㄆ", say:"https://tailo.moe.edu.tw/pin1/mp3/02_ph.mp3", word:"鼻 phīnn", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10938.mp3", zh:"鼻子", note:"送氣" },
+  { letter:"b", name:"b", ipa:"/b/", say:"https://tailo.moe.edu.tw/pin1/mp3/03_b.mp3", word:"馬 bé", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6798.mp3", note:"濁音，華語沒有" },
+  { letter:"m", name:"m", ipa:"/m/ · ㄇ", say:"https://tailo.moe.edu.tw/pin1/mp3/04_m.mp3", word:"麵 mī", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13053.mp3" },
+  { letter:"t", name:"t", ipa:"/t/ · ㄉ", say:"https://tailo.moe.edu.tw/pin1/mp3/05_t.mp3", word:"豬 ti", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11384.mp3" },
+  { letter:"th", name:"th", ipa:"/tʰ/ · ㄊ", say:"https://tailo.moe.edu.tw/pin1/mp3/06_th.mp3", word:"頭 thâu", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12031.mp3", note:"送氣" },
+  { letter:"n", name:"n", ipa:"/n/ · ㄋ", say:"https://tailo.moe.edu.tw/pin1/mp3/07_n.mp3", word:"貓 niau", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11905.mp3" },
+  { letter:"l", name:"l", ipa:"/l/ · ㄌ", say:"https://tailo.moe.edu.tw/pin1/mp3/08_l.mp3", word:"路 lōo", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10136.mp3" },
+  { letter:"k", name:"k", ipa:"/k/ · ㄍ", say:"https://tailo.moe.edu.tw/pin1/mp3/09_k.mp3", word:"狗 káu", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4329.mp3" },
+  { letter:"kh", name:"kh", ipa:"/kʰ/ · ㄎ", say:"https://tailo.moe.edu.tw/pin1/mp3/10_kh.mp3", word:"跤 kha", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10059.mp3", zh:"腳", note:"送氣" },
+  { letter:"g", name:"g", ipa:"/g/", say:"https://tailo.moe.edu.tw/pin1/mp3/11_g.mp3", word:"牛 gû", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1218.mp3", note:"濁音，華語沒有" },
+  { letter:"ng", name:"ng", ipa:"/ŋ/", say:"https://tailo.moe.edu.tw/pin1/mp3/12_ng.mp3", word:"硬 ngē", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8769.mp3", note:"在字首的 ng，華語沒有" },
+  { letter:"h", name:"h", ipa:"/h/ · ㄏ", say:"https://tailo.moe.edu.tw/pin1/mp3/13_h.mp3", word:"花 hue", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4426.mp3" },
+  { letter:"ts", name:"ts", ipa:"/ts/ · ㄗ", say:"https://tailo.moe.edu.tw/pin1/mp3/14_ts.mp3", word:"水 tsuí", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/814.mp3", note:"遇到 i 像 ㄐ" },
+  { letter:"tsh", name:"tsh", ipa:"/tsʰ/ · ㄘ", say:"https://tailo.moe.edu.tw/pin1/mp3/15_tsh.mp3", word:"菜 tshài", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8930.mp3", note:"送氣；遇到 i 像 ㄑ" },
+  { letter:"s", name:"s", ipa:"/s/ · ㄙ", say:"https://tailo.moe.edu.tw/pin1/mp3/16_s.mp3", word:"獅 sai", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9721.mp3", zh:"獅子", note:"遇到 i 像 ㄒ" },
+  { letter:"j", name:"j", ipa:"/dz/", say:"https://tailo.moe.edu.tw/pin1/mp3/17_j.mp3", word:"熱 jua̍h", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11204.mp3", note:"濁音，華語沒有" },
+  { letter:"a", name:"a", ipa:"/a/ · ㄚ", say:"https://tailo.moe.edu.tw/pin2/mp3/01_a.mp3", word:"鴨 ah", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12089.mp3", zh:"鴨子", note:"母音" },
+  { letter:"i", name:"i", ipa:"/i/ · ㄧ", say:"https://tailo.moe.edu.tw/pin2/mp3/02_i.mp3", word:"椅仔 í-á", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8492.mp3", zh:"椅子", note:"母音" },
+  { letter:"u", name:"u", ipa:"/u/ · ㄨ", say:"https://tailo.moe.edu.tw/pin2/mp3/03_u.mp3", word:"有 ū", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2439.mp3", note:"母音" },
+  { letter:"e", name:"e", ipa:"/e/ · ㄝ", say:"https://tailo.moe.edu.tw/pin2/mp3/04_e.mp3", word:"鞋 ê", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11531.mp3", zh:"鞋子", note:"母音" },
+  { letter:"o", name:"o", ipa:"/ə/ 或 /o/", say:"https://tailo.moe.edu.tw/pin2/mp3/06_o.mp3", word:"蚵仔 ô-á", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/7/7820.mp3", note:"母音，嘴型比 oo 小" },
+  { letter:"oo", name:"oo", ipa:"/ɔ/ · ㄛ", say:"https://tailo.moe.edu.tw/pin2/mp3/05_oo.mp3", word:"烏 oo", wordSay:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6227.mp3", zh:"黑", note:"母音，嘴巴張比較大" },
+  { letter:"-nn", name:"韻尾", ipa:"鼻化母音", say:"https://tailo.moe.edu.tw/pin2/mp3/07_ann_word.mp3", word:"餡 ānn", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/07_ann_word.mp3", note:"母音帶鼻音，n 不念出來" },
+  { letter:"-m", name:"韻尾", ipa:"/m/", say:"https://tailo.moe.edu.tw/pin2/mp3/08_im_word.mp3", word:"音 im", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/08_im_word.mp3", note:"收尾要閉嘴，華語沒有" },
+  { letter:"-n", name:"韻尾", ipa:"/n/", say:"https://tailo.moe.edu.tw/pin2/mp3/09_in_word.mp3", word:"因 in", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/09_in_word.mp3" },
+  { letter:"-ng", name:"韻尾", ipa:"/ŋ/", say:"https://tailo.moe.edu.tw/pin2/mp3/10_ing_word.mp3", word:"英 ing", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/10_ing_word.mp3" },
+  { letter:"-p", name:"韻尾", ipa:"/p/", say:"https://tailo.moe.edu.tw/pin2/mp3/11_kip_word.mp3", word:"急 kip", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/11_kip_word.mp3", note:"入聲：閉嘴停住，不放開" },
+  { letter:"-t", name:"韻尾", ipa:"/t/", say:"https://tailo.moe.edu.tw/pin2/mp3/12_it_word.mp3", word:"一 it", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/12_it_word.mp3", note:"入聲：舌尖頂住停住" },
+  { letter:"-k", name:"韻尾", ipa:"/k/", say:"https://tailo.moe.edu.tw/pin2/mp3/13_ik_word.mp3", word:"益 ik", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/13_ik_word.mp3", note:"入聲：舌根頂住停住" },
+  { letter:"-h", name:"韻尾", ipa:"/ʔ/", say:"https://tailo.moe.edu.tw/pin2/mp3/14_tik_word.mp3", word:"滴 tih", wordSay:"https://tailo.moe.edu.tw/pin2/mp3/14_tik_word.mp3", note:"入聲：喉嚨突然停住" },
+];
+
+// ── 基本單字（t = 漢字、sub = 台羅、say = 教育部辭典錄音）──
+const words = [
+  // 食物
+  { emoji:"🍦", t:"冰淇淋", sub:"ping-kî-lîm", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/24/24450.mp3", zh:"冰淇淋", cat:"食物" },
+  { emoji:"🥛", t:"牛奶", sub:"gû-ling", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1228.mp3", zh:"牛奶", cat:"食物" },
+  { emoji:"💧", t:"水", sub:"tsuí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/814.mp3", zh:"水", cat:"食物" },
+  { emoji:"🍵", t:"茶", sub:"tê", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6537.mp3", zh:"茶", cat:"食物" },
+  { emoji:"☕", t:"咖啡", sub:"ka-pi", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3728.mp3", zh:"咖啡", cat:"食物" },
+  { emoji:"🍚", t:"飯", sub:"pn̄g", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9222.mp3", zh:"飯", cat:"食物" },
+  { emoji:"🍜", t:"麵", sub:"mī", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13053.mp3", zh:"麵", cat:"食物" },
+  { emoji:"🍞", t:"麭", sub:"pháng", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13832.mp3", zh:"麵包", cat:"食物" },
+  { emoji:"🥚", t:"卵", sub:"nn̄g", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2953.mp3", zh:"蛋", cat:"食物" },
+  { emoji:"🐟", t:"魚", sub:"hî", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8084.mp3", zh:"魚", cat:"食物" },
+  { emoji:"🥩", t:"豬肉", sub:"ti-bah", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11411.mp3", zh:"豬肉", cat:"食物" },
+  { emoji:"🥬", t:"菜", sub:"tshài", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8930.mp3", zh:"青菜", cat:"食物" },
+  { emoji:"🍓", t:"果子", sub:"kué-tsí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4196.mp3", zh:"水果", cat:"食物" },
+  { emoji:"🍍", t:"王梨", sub:"ông-lâi", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1260.mp3", zh:"鳳梨", cat:"食物" },
+  { emoji:"🍌", t:"弓蕉", sub:"king-tsio", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/529.mp3", zh:"香蕉", cat:"食物" },
+  { emoji:"🍎", t:"蘋果", sub:"phông-kó", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13020.mp3", zh:"蘋果", cat:"食物" },
+  { emoji:"🍉", t:"西瓜", sub:"si-kue", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2839.mp3", zh:"西瓜", cat:"食物" },
+  { emoji:"🍊", t:"柑仔", sub:"kam-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5084.mp3", zh:"橘子", cat:"食物" },
+  { emoji:"🍬", t:"糖仔", sub:"thn̂g-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/14/14486.mp3", zh:"糖果", cat:"食物" },
+  { emoji:"🎂", t:"雞卵糕", sub:"ke-nn̄g-ko", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12682.mp3", zh:"蛋糕", cat:"食物" },
+  { emoji:"🍙", t:"飯丸", sub:"pn̄g-uân", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9226.mp3", zh:"飯糰", cat:"食物" },
+  { emoji:"🥟", t:"水餃", sub:"tsuí-kiáu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1143.mp3", zh:"水餃", cat:"食物" },
+  { emoji:"🍝", t:"米粉", sub:"bí-hún", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2706.mp3", zh:"米粉", cat:"食物" },
+  { emoji:"🍠", t:"番薯", sub:"han-tsî", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8756.mp3", zh:"地瓜", cat:"食物" },
+  // 交通
+  { emoji:"🚌", t:"公車", sub:"kong-tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/23/23445.mp3", zh:"公車", cat:"交通" },
+  { emoji:"🚆", t:"火車", sub:"hué-tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1242.mp3", zh:"火車", cat:"交通" },
+  { emoji:"🚗", t:"車", sub:"tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3394.mp3", zh:"車子", cat:"交通" },
+  { emoji:"🚲", t:"跤踏車", sub:"kha-ta̍h-tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10126.mp3", zh:"腳踏車", cat:"交通" },
+  { emoji:"🛵", t:"機車", sub:"ki-tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/23/23102.mp3", zh:"機車", cat:"交通" },
+  { emoji:"✈️", t:"飛行機", sub:"hue-lîng-ki", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5591.mp3", zh:"飛機", cat:"交通" },
+  { emoji:"🚢", t:"船", sub:"tsûn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/7/7784.mp3", zh:"船", cat:"交通" },
+  { emoji:"🚕", t:"計程車", sub:"kè-thîng-tshia", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5537.mp3", zh:"計程車", cat:"交通" },
+  { emoji:"🚇", t:"捷運", sub:"tsia̍t-ūn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/7/7397.mp3", zh:"捷運", cat:"交通" },
+  { emoji:"🚉", t:"車頭", sub:"tshia-thâu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3505.mp3", zh:"車站", cat:"交通" },
+  { emoji:"🎫", t:"車票", sub:"tshia-phiò", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3459.mp3", zh:"車票", cat:"交通" },
+  { emoji:"🛣️", t:"路", sub:"lōo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10136.mp3", zh:"路", cat:"交通" },
+  { emoji:"🛫", t:"機場", sub:"ki-tiûnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11721.mp3", zh:"機場", cat:"交通" },
+  // 動物
+  { emoji:"🐱", t:"貓", sub:"niau", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11905.mp3", zh:"貓", cat:"動物" },
+  { emoji:"🐶", t:"狗", sub:"káu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4329.mp3", zh:"狗", cat:"動物" },
+  { emoji:"🐦", t:"鳥仔", sub:"tsiáu-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8093.mp3", zh:"鳥", cat:"動物" },
+  { emoji:"🐴", t:"馬", sub:"bé", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6798.mp3", zh:"馬", cat:"動物" },
+  { emoji:"🐮", t:"牛", sub:"gû", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1218.mp3", zh:"牛", cat:"動物" },
+  { emoji:"🐑", t:"羊", sub:"iûnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2588.mp3", zh:"羊", cat:"動物" },
+  { emoji:"🐷", t:"豬", sub:"ti", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11384.mp3", zh:"豬", cat:"動物" },
+  { emoji:"🐔", t:"雞", sub:"ke", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12657.mp3", zh:"雞", cat:"動物" },
+  { emoji:"🦆", t:"鴨", sub:"ah", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12089.mp3", zh:"鴨子", cat:"動物" },
+  { emoji:"🐰", t:"兔仔", sub:"thòo-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3619.mp3", zh:"兔子", cat:"動物" },
+  { emoji:"🦁", t:"獅", sub:"sai", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9721.mp3", zh:"獅子", cat:"動物" },
+  { emoji:"🐘", t:"象", sub:"tshiūnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9033.mp3", zh:"大象", cat:"動物" },
+  { emoji:"🐵", t:"猴", sub:"kâu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8571.mp3", zh:"猴子", cat:"動物" },
+  { emoji:"🐢", t:"龜", sub:"ku", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12093.mp3", zh:"烏龜", cat:"動物" },
+  { emoji:"🐍", t:"蛇", sub:"tsuâ", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/7/7818.mp3", zh:"蛇", cat:"動物" },
+  { emoji:"🐝", t:"蜂", sub:"phang", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9989.mp3", zh:"蜜蜂", cat:"動物" },
+  { emoji:"🦋", t:"蝶仔", sub:"ia̍h-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11357.mp3", zh:"蝴蝶", cat:"動物" },
+  { emoji:"🐭", t:"鳥鼠", sub:"niáu-tshí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8129.mp3", zh:"老鼠", cat:"動物" },
+  { emoji:"🐯", t:"虎", sub:"hóo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4482.mp3", zh:"老虎", cat:"動物" },
+  // 自然
+  { emoji:"🌞", t:"日頭", sub:"ji̍t-thâu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1168.mp3", zh:"太陽", cat:"自然" },
+  { emoji:"🌕", t:"月娘", sub:"gue̍h-niû", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1012.mp3", zh:"月亮", cat:"自然" },
+  { emoji:"⭐", t:"星", sub:"tshenn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4994.mp3", zh:"星星", cat:"自然" },
+  { emoji:"🌧️", t:"雨", sub:"hōo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4497.mp3", zh:"雨", cat:"自然" },
+  { emoji:"🌬️", t:"風", sub:"hong", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5567.mp3", zh:"風", cat:"自然" },
+  { emoji:"☁️", t:"雲", sub:"hûn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9217.mp3", zh:"雲", cat:"自然" },
+  { emoji:"🥵", t:"熱", sub:"jua̍h", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11204.mp3", zh:"熱", cat:"自然" },
+  { emoji:"🥶", t:"寒", sub:"kuânn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8287.mp3", zh:"冷", cat:"自然" },
+  { emoji:"🌤️", t:"天", sub:"thinn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/784.mp3", zh:"天空", cat:"自然" },
+  { emoji:"🌊", t:"海", sub:"hái", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6155.mp3", zh:"海", cat:"自然" },
+  { emoji:"⛰️", t:"山", sub:"suann", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/198.mp3", zh:"山", cat:"自然" },
+  { emoji:"🏞️", t:"溪", sub:"khe", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9642.mp3", zh:"溪", cat:"自然" },
+  { emoji:"🌳", t:"樹仔", sub:"tshiū-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11706.mp3", zh:"樹", cat:"自然" },
+  { emoji:"🌸", t:"花", sub:"hue", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4426.mp3", zh:"花", cat:"自然" },
+  { emoji:"🪨", t:"石頭", sub:"tsio̍h-thâu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/22/22912.mp3", zh:"石頭", cat:"自然" },
+  // 顏色
+  { emoji:"🔴", t:"紅色", sub:"âng-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5393.mp3", zh:"紅色", cat:"顏色" },
+  { emoji:"🔵", t:"藍色", sub:"nâ-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12602.mp3", zh:"藍色", cat:"顏色" },
+  { emoji:"🟢", t:"青色", sub:"tshenn-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4535.mp3", zh:"綠色", cat:"顏色" },
+  { emoji:"🟡", t:"黃色", sub:"n̂g-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9236.mp3", zh:"黃色", cat:"顏色" },
+  { emoji:"⚪", t:"白色", sub:"pe̍h-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1893.mp3", zh:"白色", cat:"顏色" },
+  { emoji:"⚫", t:"烏色", sub:"oo-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6250.mp3", zh:"黑色", cat:"顏色" },
+  { emoji:"🟤", t:"咖啡色", sub:"ka-pi-sik", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3729.mp3", zh:"咖啡色", cat:"顏色" },
+  // 數字
+  { emoji:"1️⃣", t:"一", sub:"it", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/2.mp3", zh:"1", cat:"數字" },
+  { emoji:"2️⃣", t:"二", sub:"jī", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/44.mp3", zh:"2", cat:"數字" },
+  { emoji:"3️⃣", t:"三", sub:"sann", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/163.mp3", zh:"3", cat:"數字" },
+  { emoji:"4️⃣", t:"四", sub:"sì", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1408.mp3", zh:"4", cat:"數字" },
+  { emoji:"5️⃣", t:"五", sub:"gōo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/565.mp3", zh:"5", cat:"數字" },
+  { emoji:"6️⃣", t:"六", sub:"la̍k", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/578.mp3", zh:"6", cat:"數字" },
+  { emoji:"7️⃣", t:"七", sub:"tshit", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/40.mp3", zh:"7", cat:"數字" },
+  { emoji:"8️⃣", t:"八", sub:"peh", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/49.mp3", zh:"8", cat:"數字" },
+  { emoji:"9️⃣", t:"九", sub:"káu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/41.mp3", zh:"9", cat:"數字" },
+  { emoji:"🔟", t:"十", sub:"tsa̍p", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/54.mp3", zh:"10", cat:"數字" },
+  // 家人
+  { emoji:"👩", t:"阿母", sub:"a-bú", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4524.mp3", zh:"媽媽", cat:"家人" },
+  { emoji:"👨", t:"阿爸", sub:"a-pah", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4558.mp3", zh:"爸爸", cat:"家人" },
+  { emoji:"👵", t:"阿媽", sub:"a-má", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4621.mp3", zh:"奶奶 / 外婆", cat:"家人" },
+  { emoji:"👴", t:"阿公", sub:"a-kong", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4508.mp3", zh:"爺爺 / 外公", cat:"家人" },
+  { emoji:"🧒", t:"囡仔", sub:"gín-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2142.mp3", zh:"小孩", cat:"家人" },
+  { emoji:"🧑", t:"阿兄", sub:"a-hiann", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4520.mp3", zh:"哥哥", cat:"家人" },
+  { emoji:"👩‍🦰", t:"阿姊", sub:"a-tsí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4555.mp3", zh:"姊姊", cat:"家人" },
+  { emoji:"👦", t:"小弟", sub:"sió-tī", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/320.mp3", zh:"弟弟", cat:"家人" },
+  { emoji:"👧", t:"小妹", sub:"sió-muē", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/353.mp3", zh:"妹妹", cat:"家人" },
+  { emoji:"🤝", t:"朋友", sub:"pîng-iú", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4199.mp3", zh:"朋友", cat:"家人" },
+  { emoji:"🧑‍🏫", t:"先生", sub:"sian-sinn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2059.mp3", zh:"老師", cat:"家人" },
+  { emoji:"🧑‍⚕️", t:"醫生", sub:"i-sing", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12673.mp3", zh:"醫生", cat:"家人" },
+  // 地點
+  { emoji:"🏠", t:"厝", sub:"tshù", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5790.mp3", zh:"家 / 房子", cat:"地點" },
+  { emoji:"🏫", t:"學校", sub:"ha̍k-hāu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11622.mp3", zh:"學校", cat:"地點" },
+  { emoji:"🚻", t:"便所", sub:"piān-sóo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4675.mp3", zh:"廁所", cat:"地點" },
+  { emoji:"🛋️", t:"房間", sub:"pâng-king", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4113.mp3", zh:"房間", cat:"地點" },
+  { emoji:"🛏️", t:"眠床", sub:"bîn-tshn̂g", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6389.mp3", zh:"床", cat:"地點" },
+  { emoji:"🚪", t:"門", sub:"mn̂g", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4495.mp3", zh:"門", cat:"地點" },
+  { emoji:"🪟", t:"窗仔", sub:"thang-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8777.mp3", zh:"窗戶", cat:"地點" },
+  { emoji:"🌲", t:"公園", sub:"kong-hn̂g", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/739.mp3", zh:"公園", cat:"地點" },
+  { emoji:"🏖️", t:"海墘", sub:"hái-kînn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6210.mp3", zh:"海邊", cat:"地點" },
+  { emoji:"🍽️", t:"餐廳", sub:"tshan-thiann", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/22/22290.mp3", zh:"餐廳", cat:"地點" },
+  { emoji:"🏨", t:"旅社", sub:"lí-siā", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6022.mp3", zh:"旅館", cat:"地點" },
+  { emoji:"🏪", t:"店", sub:"tiàm", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/3/3821.mp3", zh:"店", cat:"地點" },
+  { emoji:"🛕", t:"廟", sub:"biō", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11011.mp3", zh:"廟", cat:"地點" },
+  { emoji:"🧺", t:"市場", sub:"tshī-tiûnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1772.mp3", zh:"市場", cat:"地點" },
+  { emoji:"🏥", t:"病院", sub:"pēnn-īnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/6/6357.mp3", zh:"醫院", cat:"地點" },
+  // 身體
+  { emoji:"👤", t:"頭", sub:"thâu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/12/12031.mp3", zh:"頭", cat:"身體" },
+  { emoji:"👁️", t:"目睭", sub:"ba̍k-tsiu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1975.mp3", zh:"眼睛", cat:"身體" },
+  { emoji:"👃", t:"鼻", sub:"phīnn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10938.mp3", zh:"鼻子", cat:"身體" },
+  { emoji:"👄", t:"喙", sub:"tshuì", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8174.mp3", zh:"嘴巴", cat:"身體" },
+  { emoji:"👂", t:"耳仔", sub:"hīnn-á", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2633.mp3", zh:"耳朵", cat:"身體" },
+  { emoji:"✋", t:"手", sub:"tshiú", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/794.mp3", zh:"手", cat:"身體" },
+  { emoji:"🦶", t:"跤", sub:"kha", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/10/10059.mp3", zh:"腳", cat:"身體" },
+  { emoji:"❤️", t:"心", sub:"sim", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/792.mp3", zh:"心", cat:"身體" },
+  // 時間
+  { emoji:"📅", t:"今仔日", sub:"kin-á-ji̍t", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/629.mp3", zh:"今天", cat:"時間" },
+  { emoji:"⏭️", t:"明仔載", sub:"bîn-á-tsài", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4208.mp3", zh:"明天", cat:"時間" },
+  { emoji:"⏮️", t:"昨昏", sub:"tsa-hng", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5016.mp3", zh:"昨天", cat:"時間" },
+  { emoji:"🌅", t:"早起", sub:"tsá-khí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2517.mp3", zh:"早上", cat:"時間" },
+  { emoji:"☀️", t:"中晝", sub:"tiong-tàu", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/713.mp3", zh:"中午", cat:"時間" },
+  { emoji:"🌇", t:"下晡", sub:"ē-poo", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/432.mp3", zh:"下午", cat:"時間" },
+  { emoji:"🌙", t:"暗時", sub:"àm-sî", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9598.mp3", zh:"晚上", cat:"時間" },
+];
+
+// ── 基本用語（錄音：詞目或辭典例句）──
+const phrases = [
+  { t:"𠢕早", sub:"gâu-tsá", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13473.mp3", zh:"早安" },
+  { t:"你食飽未？", sub:"Lí tsia̍h-pá--buē?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47190.mp3", zh:"你吃飽了沒？", note:"台灣人常用的打招呼" },
+  { t:"我食飽矣。", sub:"Guá tsia̍h-pá--ah.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/49/49025.mp3", zh:"我吃飽了。" },
+  { t:"多謝你！", sub:"To-siā--lí!", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47986.mp3", zh:"謝謝你！" },
+  { t:"勞力", sub:"lóo-la̍t", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8178.mp3", zh:"謝謝（麻煩你了）", note:"請人幫忙之後說" },
+  { t:"感謝", sub:"kám-siā", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/9/9469.mp3", zh:"感謝" },
+  { t:"歹勢", sub:"pháinn-sè", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1093.mp3", zh:"不好意思" },
+  { t:"失禮", sub:"sit-lé", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/1/1826.mp3", zh:"對不起" },
+  { t:"無要緊", sub:"bô iàu-kín", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8623.mp3", zh:"沒關係" },
+  { t:"再會", sub:"tsài-huē", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2232.mp3", zh:"再見" },
+  { t:"順行", sub:"sūn-kiânn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/14/14362.mp3", zh:"慢走", note:"送客時說" },
+  { t:"是", sub:"sī", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4997.mp3", zh:"是" },
+  { t:"毋是", sub:"m̄ sī", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/990.mp3", zh:"不是" },
+  { t:"好", sub:"hó", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2272.mp3", zh:"好" },
+  { t:"毋知", sub:"m̄ tsai", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/0/976.mp3", zh:"不知道" },
+  { t:"請坐", sub:"tshiánn-tsē", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/11/11414.mp3", zh:"請坐" },
+  { t:"請用茶。", sub:"Tshiánn īng tê.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47371.mp3", zh:"請喝茶。" },
+  { t:"你號做啥物名？", sub:"Lí hō-tsò siánn-mih miâ?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47691.mp3", zh:"你叫什麼名字？" },
+  { t:"你蹛佇佗位？", sub:"Lí tuà tī tó-uī?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/48/48432.mp3", zh:"你住在哪裡？" },
+  { t:"我想欲去便所。", sub:"Guá siūnn-beh khì piān-sóo.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/60/60695.mp3", zh:"我想上廁所。" },
+  { t:"你小等一下，連鞭就好矣。", sub:"Lí sió-tán--tsi̍t-ē, liâm-mi tō hó--ah.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/53/53959.mp3", zh:"你稍等一下，馬上就好了。" },
+  { t:"恭喜", sub:"kiong-hí", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/5/5973.mp3", zh:"恭喜" },
+  { t:"加油", sub:"ka-iû", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/23/23855.mp3", zh:"加油" },
+  { t:"拜託", sub:"pài-thok", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/4/4952.mp3", zh:"拜託" },
+];
+
+// ── 小對話（每一句都是辭典裡的真人錄音）──
+const dialogs = [
+  { title:"打招呼", lines:[
+    { who:"A", t:"𠢕早！", sub:"gâu-tsá", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/13/13473.mp3", zh:"早安！" },
+    { who:"B", t:"你食飽未？", sub:"Lí tsia̍h-pá--buē?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47190.mp3", zh:"你吃飽了沒？" },
+    { who:"A", t:"我食飽矣。", sub:"Guá tsia̍h-pá--ah.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/49/49025.mp3", zh:"我吃飽了。" },
+  ]},
+  { title:"請人客", lines:[
+    { who:"A", t:"請坐！", sub:"Tshiánn-tsē!", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/48/48627.mp3", zh:"請坐！" },
+    { who:"B", t:"多謝！", sub:"to-siā", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/2/2415.mp3", zh:"謝謝！" },
+    { who:"A", t:"請用茶。", sub:"Tshiánn īng tê.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47371.mp3", zh:"請喝茶。" },
+    { who:"B", t:"勞力！", sub:"lóo-la̍t", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/8/8178.mp3", zh:"麻煩你了，謝謝！" },
+  ]},
+  { title:"買弓蕉", lines:[
+    { who:"A", t:"頭家，弓蕉一斤偌濟錢？", sub:"Thâu-ke, king-tsio tsi̍t kin guā-tsē tsînn?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/52/52854.mp3", zh:"老闆，香蕉一斤多少錢？" },
+    { who:"B", t:"遮的加起來攏總一百箍。", sub:"Tsia--ê ka--khí-lâi lóng-tsóng tsi̍t-pah khoo.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/46/46911.mp3", zh:"這些加起來總共一百元。" },
+    { who:"A", t:"多謝你！", sub:"To-siā--lí!", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/47/47986.mp3", zh:"謝謝你！" },
+    { who:"B", t:"順行！", sub:"sūn-kiânn", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/subak/14/14362.mp3", zh:"慢走！" },
+  ]},
+  { title:"一起去看電影", lines:[
+    { who:"A", t:"咱來去看電影好無？", sub:"Lán lâi-khì khuànn tiān-iánn hó--bô?", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/49/49257.mp3", zh:"我們去看電影好不好？" },
+    { who:"B", t:"我和你做伙來去。", sub:"Guá hām lí tsò-hué lâi-khì.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/49/49435.mp3", zh:"我跟你一起去。" },
+  ]},
+  { title:"揣便所", lines:[
+    { who:"A", t:"我想欲去便所。", sub:"Guá siūnn-beh khì piān-sóo.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/60/60695.mp3", zh:"我想上廁所。" },
+    { who:"B", t:"我踮遮等你。", sub:"Guá tiàm tsia tán--lí.", say:"https://sutian.moe.edu.tw/media/senn/mp3/imtong/leku/57/57466.mp3", zh:"我在這裡等你。" },
+  ]},
+];
+
+// ── 發音規則（on:"sub" = 比對台羅那一行）──
+const phonics = [
+  { id:"tone1", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong1.mp3", audioLabel:"tong", label:"1 聲", sound:"高平", note:"沒有符號、結尾不是 p t k h：tshia（車）", re:/(^|[\s\-.,?!])([A-Za-z]*[abcdefgijlmnoqrsuvwxyz])(?=$|[\s\-.,?!])/g, grp:true, on:"sub" },
+  { id:"tone2", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong2.mp3", audioLabel:"tóng", label:"2 聲 á", sound:"高降", note:"符號 ´：hó（好）", re:/[A-Za-z]*́[A-Za-z]*/g, on:"sub" },
+  { id:"tone3", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong3.mp3", audioLabel:"tòng", label:"3 聲 à", sound:"低降", note:"符號 `：sì（四）", re:/[A-Za-z]*̀[A-Za-z]*/g, on:"sub" },
+  { id:"tone4", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong4.mp3", audioLabel:"tok", label:"4 聲", sound:"低促", note:"沒有符號、結尾是 p t k h：ah（鴨）", re:/(^|[\s\-.,?!])([A-Za-z]*[ptkh])(?=$|[\s\-.,?!])/g, grp:true, on:"sub" },
+  { id:"tone5", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong5.mp3", audioLabel:"tông", label:"5 聲 â", sound:"低升", note:"符號 ˆ：gû（牛）", re:/[A-Za-z]*̂[A-Za-z]*/g, on:"sub" },
+  { id:"tone7", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong7.mp3", audioLabel:"tōng", label:"7 聲 ā", sound:"中平", note:"符號 ¯：mī（麵）。第 6 聲在現代台語已和第 7 聲合併", re:/[A-Za-z]*̄[A-Za-z]*/g, on:"sub" },
+  { id:"tone8", audio:"https://tailo.moe.edu.tw/tone/tone1/mp3/tong8.mp3", audioLabel:"to̍k", label:"8 聲 a̍", sound:"高促", note:"符號 ̍、結尾是 p t k h：la̍k（六）", re:/[A-Za-z]*̍[A-Za-z]*/g, on:"sub" },
+  { id:"asp", label:"送氣 ph th kh tsh", sound:"送氣", note:"h 表示送氣，吐氣比較強：pa ≠ pha", re:/tsh|ph|th|kh/g, on:"sub" },
+  { id:"voiced", label:"濁音 b g j", sound:"/b/ /g/ /dz/", note:"聲帶要震動，華語沒有這三個音", re:/(^|[\s\-])([bgj])/g, grp:true, on:"sub" },
+  { id:"nasal", label:"鼻化 nn", sound:"鼻化母音", note:"nn 不念出 n，是整個母音帶鼻音：sann（三）", re:/nn(?![̀-ͯg])/g, on:"sub" },
+  { id:"stop", label:"入聲 -p -t -k -h", sound:"短促收尾", note:"p t k 只做出嘴型不放開，h 是突然停住", re:/[ptkh](?=$|[\s\-.,?!])/g, on:"sub" },
+  { id:"coda", label:"鼻音收尾 -m -n -ng", sound:"/m/ /n/ /ŋ/", note:"-m 要閉嘴：sim（心）；華語沒有 -m 收尾", re:/(^|[^n])(ng|m|n)(?=$|[\s\-.,?!])/g, grp:true, on:"sub" },
+];
+
+
+// ============================================================
+//  單元定義
+// ============================================================
+const units = [
+  { id:"alphabet", name:"台羅字母", data:alphabet },
+  { id:"words",    name:"基本單字",   data:words },
+  { id:"vocab",    name:"基本用語",   data:phrases },
+  { id:"dialog",   name:"小對話",     data:dialogs },
+];
+
+let currentUnit = "alphabet";
+let currentMode = "browse";
+let currentFilter = null;   // 拼讀規則
+let currentCat = null;      // 單字分類
+let phonicsOpen = false;    // 拼讀按鈕是否展開
+const categories = [...new Set(words.map(w => w.cat))];
+
+// ── 篩選工具 ──
+function phonicsRule() { return phonics.find(p => p.id === currentFilter); }
+const ruleField = rule => rule.on || 't';   // 規則比對哪一行：t（主文字）或 sub（拼音）
+function matchRule(w, rule) {
+  const text = w[ruleField(rule)] || '';
+  if (rule.except && rule.except.includes(text)) return false;
+  if (rule.list) return rule.list.includes(text);
+  rule.re.lastIndex = 0; const ok = rule.re.test(text); rule.re.lastIndex = 0; return ok;
+}
+function filteredWords() {
+  const r = phonicsRule();
+  return words.filter(w => (!currentCat || w.cat === currentCat) && (!r || matchRule(w, r)));
+}
+function hl(word, field = 't') {
+  const r = phonicsRule();
+  if (!r || !word || ruleField(r) !== field) return word;
+  return word.replace(r.re, (m, a, b) => r.grp ? `${a}<mark>${b}</mark>` : `<mark>${m}</mark>`);
+}
+// 測驗用的資料：基本單字頁會跟著篩選
+function quizData() {
+  return currentUnit === 'words' ? filteredWords() : units.find(u => u.id === currentUnit).data;
+}
+const sayOf = x => x.say || x.t;
+
+// ── 口音切換（只有設定 VARIANTS 的語言才有，例如西班牙文）──
+const VARIANTS = null;
+let variant = VARIANTS ? VARIANTS[0].id : null;
+try { const v = localStorage.getItem('variant-nan-TW'); if (VARIANTS && VARIANTS.some(x => x.id === v)) variant = v; } catch (e) {}
+const subOf = x => (variant && x['sub_' + variant]) || x.sub;
+const ipaOf = a => (variant && a['ipa_' + variant]) || a.ipa;
+function renderVariantBar() {
+  const bar = document.getElementById('variant-bar');
+  if (!VARIANTS) { bar.style.display = 'none'; return; }
+  bar.innerHTML = '口音：' + VARIANTS.map(v =>
+    `<button class="chip sm${v.id === variant ? ' active' : ''}" data-variant="${v.id}">${v.label}</button>`).join('');
+  bar.querySelectorAll('[data-variant]').forEach(b => b.addEventListener('click', () => {
+    variant = b.dataset.variant;
+    try { localStorage.setItem('variant-nan-TW', variant); } catch (e) {}
+    renderVariantBar(); renderContent();
+  }));
+}
+
+// ── TTS ──
+let currentAudio = null;
+function speak(text) {
+  if (!text) return;
+  // 錄音檔（台語版用教育部辭典的真人錄音）
+  if (/^https?:\/\//.test(text)) {
+    if (currentAudio) currentAudio.pause();
+    currentAudio = new Audio(text);
+    currentAudio.play().catch(() => {});
+    return;
+  }
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const vv = VARIANTS ? VARIANTS.find(x => x.id === variant) : null;
+  const langs = vv ? vv.voices : ['nan-TW'];
+  u.lang = langs[0];
+  u.rate = 1;
+  const voices = speechSynthesis.getVoices().map(v => ({ v, l: v.lang.replace('_', '-') }));
+  const hit = langs.map(l => voices.find(x => x.l === l)).find(Boolean)
+           || voices.find(x => x.l.startsWith('nan'));
+  if (hit) u.voice = hit.v;
+  speechSynthesis.speak(u);
+}
+if ('speechSynthesis' in window) {
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+// ── Render Unit Tabs ──
+function renderUnitTabs() {
+  const bar = document.getElementById('unit-bar');
+  bar.innerHTML = units.map(u =>
+    `<button class="unit-btn${u.id === currentUnit ? ' active' : ''}" data-unit="${u.id}">${u.name}</button>`
+  ).join('');
+  bar.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentUnit = btn.dataset.unit;
+      renderUnitTabs();
+      renderContent();
+    });
+  });
+}
+
+// ── Update Counter ──
+function updateCounter() {
+  const u = units.find(u => u.id === currentUnit);
+  if (currentUnit === 'words') {
+    const r = phonicsRule();
+    const tags = [currentCat, r && r.label].filter(Boolean).join('・');
+    document.getElementById('counter').textContent =
+      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+  } else {
+    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+  }
+}
+
+function renderContent() {
+  updateCounter();
+  if (currentMode === 'browse') renderBrowse();
+  else startQuiz();
+}
+
+const subLine = x => subOf(x) ? `<div class="sub">${hl(subOf(x), 'sub')}</div>` : '';
+
+// ── BROWSE ──
+function renderBrowse() {
+  const grid = document.getElementById('browse-view');
+  const quizEl = document.getElementById('quiz-view');
+  grid.style.display = '';
+  quizEl.style.display = 'none';
+
+  if (currentUnit === 'alphabet') {
+    grid.className = 'grid alpha-table';
+    grid.innerHTML = alphabet.map(a => `
+      <div class="alpha-row${a.note ? ' has-note' : ''}">
+        <div class="al-letter${a.letter.length > 2 ? ' long' : ''}" data-speak="${a.say || a.name}">${a.letter}</div>
+        <div class="al-name" data-speak="${a.say || a.name}">
+          <div class="al-main">${a.name}</div>
+          <div class="al-ipa">${ipaOf(a)}</div>
+          ${a.note ? `<div class="al-sub">${a.note}</div>` : ''}
+        </div>
+        <div class="al-word" data-speak="${a.wordSay || a.word}">
+          <div class="al-main">${a.word}</div>
+          <div class="al-sub">${a.zh || ''}</div>
+        </div>
+      </div>`).join('');
+  }
+  else if (currentUnit === 'vocab') {
+    grid.className = 'grid';
+    grid.innerHTML = phrases.map(p => `
+      <div class="card" data-speak="${sayOf(p)}">
+        <button class="speak" data-speak="${sayOf(p)}" aria-label="播放">🔊</button>
+        <div class="main" style="font-size:1.1rem">${p.t}</div>
+        ${subLine(p)}
+        <div class="desc">${p.zh}</div>
+        ${p.note ? `<div class="rule-note">${p.note}</div>` : ''}
+      </div>`).join('');
+  }
+  else if (currentUnit === 'words') {
+    grid.className = 'grid';
+    const r = phonicsRule();
+    // 分類按鈕
+    const catChips = `
+      <div class="chips">
+        <button class="chip${!currentCat ? ' active' : ''}" data-cat="">全部</button>
+        ${categories.map(c => `<button class="chip${currentCat === c ? ' active' : ''}" data-cat="${c}">${c}</button>`).join('')}
+      </div>`;
+    // 拼讀按鈕（可折疊；沒有規則的語言就不顯示）
+    const phonicsChips = !phonics.length ? '' : `
+      <div class="chips">
+        <button class="toggle" data-toggle="1">發音規則 ${phonicsOpen ? '▾' : '▸'}${r && !phonicsOpen ? `：${r.label}` : ''}</button>
+        ${phonicsOpen ? `
+          <button class="chip sm${!r ? ' active' : ''}" data-filter="">不篩選</button>
+          ${phonics.map(p => `<button class="chip sm${r && r.id === p.id ? ' active' : ''}" data-filter="${p.id}">${p.label}</button>`).join('')}` : ''}
+      </div>
+      ${r ? `<div class="rule-box"><b>${r.label}</b>　${r.sound}<div>${r.note}</div>${r.audio ? `<button class="chip sm rule-audio" data-speak="${r.audio}">🔊 聽 ${r.audioLabel || ''}</button>` : ''}</div>` : ''}`;
+    const list = filteredWords();
+    grid.innerHTML = catChips + phonicsChips + (list.length ? '' : `<div class="quiz-msg" style="grid-column:1/-1">這個分類裡沒有符合這條規則的字。</div>`) + list.map(w => `
+      <div class="card" data-speak="${sayOf(w)}">
+        <button class="speak" data-speak="${sayOf(w)}" aria-label="播放">🔊</button>
+        <div class="sub" style="margin-bottom:0.2rem">${w.cat}</div>
+        <div class="emoji">${w.emoji}</div>
+        <div class="main" style="font-size:1.15rem">${hl(w.t)}</div>
+        ${subLine(w)}
+        <div class="desc">${w.zh}</div>
+      </div>`).join('');
+  }
+  else {
+    grid.className = 'grid dialog-grid';
+    grid.innerHTML = dialogs.map(d => `
+      <div class="dialog-card">
+        <h3>${d.title}</h3>
+        ${d.lines.map(l => `
+          <div class="line" data-speak="${sayOf(l)}">
+            <span class="who">${l.who}</span>
+            <span class="it">${l.t}</span>
+            ${l.sub ? `<span class="zh">${l.sub}</span>` : ''}
+            <span class="zh">${l.zh}</span>
+          </div>`).join('')}
+      </div>`).join('');
+  }
+}
+
+// 事件委派：篩選按鈕 / 點任何帶 data-speak 的元素就發音
+document.getElementById('browse-view').addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle]');
+  const c = e.target.closest('[data-cat]');
+  const f = e.target.closest('[data-filter]');
+  if (t || c || f) {
+    if (t) phonicsOpen = !phonicsOpen;
+    if (c) currentCat = c.dataset.cat || null;
+    if (f) currentFilter = f.dataset.filter || null;
+    updateCounter();
+    renderBrowse();
+    return;
+  }
+  const el = e.target.closest('[data-speak]');
+  if (el) speak(el.dataset.speak);
+});
+
+// ── QUIZ ──
+let quizOrder = [];
+let quizIdx = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  const grid = document.getElementById('browse-view');
+  const quizEl = document.getElementById('quiz-view');
+  grid.style.display = 'none';
+  quizEl.style.display = 'block';
+
+  if (currentUnit === 'dialog') {
+    quizEl.innerHTML = `<div class="quiz-msg">對話單元請切換到「瀏覽」模式，點每一行就能聽發音、跟著念。</div>`;
+    return;
+  }
+  quizOrder = shuffle(quizData().map((_, i) => i));
+  quizIdx = 0;
+  renderQuizCard();
+}
+
+function itemSpeech(item) {
+  return currentUnit === 'alphabet' ? (item.say || item.name) : sayOf(item);
+}
+
+function renderQuizCard() {
+  const container = document.getElementById('quiz-view');
+  const data = quizData();
+
+  if (quizIdx >= quizOrder.length) {
+    container.innerHTML = `
+      <div class="flashcard">
+        <div class="fc-front">
+          <div class="prompt">🎉 全部完成！</div>
+          <div class="tap-hint">太棒了</div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="q-btn pri" onclick="startQuiz()">再來一輪</button>
+      </div>`;
+    return;
+  }
+
+  const item = data[quizOrder[quizIdx]];
+  let frontHTML, backHTML;
+
+  if (currentUnit === 'alphabet') {
+    frontHTML = true
+      ? `<button class="speak-circle" id="fc-listen" style="margin:0 auto 0.6rem" aria-label="播放">🔊</button><div class="tap-hint">先聽聲音，是哪個符號？點擊翻牌</div>`
+      : `<div class="prompt">${item.name}</div><div class="tap-hint">是哪個符號？點擊翻牌</div>`;
+    backHTML = `
+      <div class="ans-main">${item.letter}</div>
+      <div class="ans-sub">${ipaOf(item)}</div>
+      <div class="ans-desc">${item.word}（${item.zh}）</div>`;
+  }
+  else {
+    const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
+    frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">台語怎麼說？點擊翻牌</div>`;
+    backHTML = `${em}
+      <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
+      ${subOf(item) ? `<div class="ans-sub">${currentUnit === 'words' ? hl(subOf(item), 'sub') : subOf(item)}</div>` : ''}
+      <div class="ans-desc">${item.zh}</div>
+      ${item.note ? `<div class="ans-note">${item.note}</div>` : ''}`;
+  }
+  const speakText = itemSpeech(item);
+
+  container.innerHTML = `
+    <div class="flashcard" id="fc" onclick="revealCard()">
+      <div class="fc-front">${frontHTML}</div>
+      <div class="fc-back">
+        ${backHTML}
+        <button class="speak-circle" id="fc-speak" aria-label="播放">🔊</button>
+      </div>
+    </div>
+    <div class="quiz-nav">
+      <button class="q-btn sec" onclick="startQuiz()">🔀 重新洗牌</button>
+      <button class="q-btn pri" onclick="nextCard()">下一張 →</button>
+    </div>
+    <div class="progress-text">${quizIdx + 1} / ${quizOrder.length}</div>`;
+
+  const listen = document.getElementById('fc-listen');
+  if (listen) {
+    listen.addEventListener('click', e => { e.stopPropagation(); speak(speakText); });
+    speak(speakText);
+  }
+  document.getElementById('fc-speak').addEventListener('click', e => {
+    e.stopPropagation();
+    speak(speakText);
+  });
+}
+
+function revealCard() {
+  const fc = document.getElementById('fc');
+  if (fc && !fc.classList.contains('revealed')) {
+    fc.classList.add('revealed');
+    speak(itemSpeech(quizData()[quizOrder[quizIdx]]));
+  }
+}
+
+function nextCard() {
+  quizIdx++;
+  renderQuizCard();
+}
+
+// ── Mode Switching ──
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentMode = btn.dataset.mode;
+    document.querySelectorAll('.mode-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.mode === currentMode)
+    );
+    renderContent();
+  });
+});
+
+// ── Init ──
+renderVariantBar();
+renderUnitTabs();
+renderContent();
+
+</script>
+</body>
+</html>
