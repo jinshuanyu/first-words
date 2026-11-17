@@ -300,16 +300,24 @@ body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
 .support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
 @media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
 
-/* 五十音：片假名跟平假名一樣大、同一高度，羅馬字小字放旁邊 */
-.alpha-table .alpha-row{align-items:start}
+/* 五十音：片假名比平假名小一號，跟平假名對齊同一條基線；羅馬字小字放旁邊 */
+.alpha-table .alpha-row{align-items:baseline}
 .al-letter,.al-kana{line-height:1.15}
 .al-kana-line{display:flex;align-items:baseline;gap:0.5rem}
-.al-kana{font-size:2.8rem;color:#2C2C2C}
+.al-kana{font-size:2.3rem;color:#2C2C2C}
 .al-kana-line .al-ipa{margin-top:0}
-.alpha-table .al-word{padding-top:0.55rem}
-@media(max-width:420px){ .al-kana{font-size:2.3rem} .alpha-table .al-word{padding-top:0.45rem} }
-/* 清音／濁音・半濁音切換 */
-.agroup{display:flex;justify-content:center;gap:0.5rem}
+@media(max-width:420px){ .al-kana{font-size:1.9rem} }
+/* 拗音（兩個字）：第一欄加寬、字小一點 */
+.alpha-table.yoon .alpha-row{grid-template-columns:96px 1fr 1.2fr}
+.alpha-table.yoon .al-letter{font-size:2.3rem;white-space:nowrap}
+.alpha-table.yoon .al-kana{font-size:1.9rem;white-space:nowrap}
+@media(max-width:420px){
+  .alpha-table.yoon .alpha-row{grid-template-columns:78px 1fr 1.15fr}
+  .alpha-table.yoon .al-letter{font-size:1.9rem}
+  .alpha-table.yoon .al-kana{font-size:1.55rem}
+}
+/* 清音／濁音・半濁音／拗音 切換 */
+.agroup{display:flex;justify-content:center;gap:0.5rem;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -413,11 +421,45 @@ const alphabet = [
   { letter:"べ", name:"be", ipa:"ベ", say:"ベ", word:"べんとう", zh:"便當" },
   { letter:"ぼ", name:"bo", ipa:"ボ", say:"ボ", word:"ぼうし", zh:"帽子" },
   // ── 半濁音（右上加 ゜）──
-  { letter:"ぱ", name:"pa", ipa:"パ", say:"パ", word:"ぱちぱち", zh:"拍手聲", note:"半濁音：右上加 ゜" },
-  { letter:"ぴ", name:"pi", ipa:"ピ", say:"ピ", word:"ぴかぴか", zh:"閃閃發亮" },
-  { letter:"ぷ", name:"pu", ipa:"プ", say:"プ", word:"ぷかぷか", zh:"輕輕浮著" },
-  { letter:"ぺ", name:"pe", ipa:"ペ", say:"ペ", word:"ぺこぺこ", zh:"肚子餓扁扁" },
-  { letter:"ぽ", name:"po", ipa:"ポ", say:"ポ", word:"ぽかぽか", zh:"暖洋洋" },
+  { letter:"ぱ", name:"pa", ipa:"パ", say:"パ", word:"はっぱ", zh:"葉子", note:"半濁音：右上加 ゜" },
+  { letter:"ぴ", name:"pi", ipa:"ピ", say:"ピ", word:"えんぴつ", zh:"鉛筆" },
+  { letter:"ぷ", name:"pu", ipa:"プ", say:"プ", word:"てんぷら", zh:"天婦羅" },
+  { letter:"ぺ", name:"pe", ipa:"ペ", say:"ペ", word:"ぺんぎん", zh:"企鵝" },
+  { letter:"ぽ", name:"po", ipa:"ポ", say:"ポ", word:"たんぽぽ", zh:"蒲公英" },
+  // ── 拗音（い段＋小的 ゃ ゅ ょ，念成一拍）──
+  { letter:"きゃ", name:"kya", ipa:"キャ", say:"キャ", word:"キャベツ", zh:"高麗菜", note:"い段＋小 ゃゅょ，念成一拍" },
+  { letter:"きゅ", name:"kyu", ipa:"キュ", say:"キュ", word:"きゅうり", zh:"小黃瓜" },
+  { letter:"きょ", name:"kyo", ipa:"キョ", say:"キョ", word:"きょうりゅう", zh:"恐龍" },
+  { letter:"しゃ", name:"sha", ipa:"シャ", say:"シャ", word:"しゃしん", zh:"照片" },
+  { letter:"しゅ", name:"shu", ipa:"シュ", say:"シュ", word:"しゅくだい", zh:"作業" },
+  { letter:"しょ", name:"sho", ipa:"ショ", say:"ショ", word:"しょうぼうしゃ", zh:"消防車" },
+  { letter:"ちゃ", name:"cha", ipa:"チャ", say:"チャ", word:"ちゃわん", zh:"飯碗" },
+  { letter:"ちゅ", name:"chu", ipa:"チュ", say:"チュ", word:"ちゅうしゃ", zh:"打針" },
+  { letter:"ちょ", name:"cho", ipa:"チョ", say:"チョ", word:"ちょうちょ", zh:"蝴蝶" },
+  { letter:"にゃ", name:"nya", ipa:"ニャ", say:"ニャ", word:"こんにゃく", zh:"蒟蒻" },
+  { letter:"にゅ", name:"nyu", ipa:"ニュ", say:"ニュ", word:"ぎゅうにゅう", zh:"牛奶" },
+  { letter:"にょ", name:"nyo", ipa:"ニョ", say:"ニョ", word:"にょろにょろ", zh:"（蛇）彎彎曲曲地爬" },
+  { letter:"ひゃ", name:"hya", ipa:"ヒャ", say:"ヒャ", word:"ひゃく", zh:"一百" },
+  { letter:"ひゅ", name:"hyu", ipa:"ヒュ", say:"ヒュ", word:"ひゅうひゅう", zh:"（風）咻咻地吹" },
+  { letter:"ひょ", name:"hyo", ipa:"ヒョ", say:"ヒョ", word:"ひょう", zh:"豹" },
+  { letter:"みゃ", name:"mya", ipa:"ミャ", say:"ミャ", word:"さんみゃく", zh:"山脈" },
+  { letter:"みゅ", name:"myu", ipa:"ミュ", say:"ミュ", word:"ミュージック", zh:"音樂" },
+  { letter:"みょ", name:"myo", ipa:"ミョ", say:"ミョ", word:"みょうじ", zh:"姓氏" },
+  { letter:"りゃ", name:"rya", ipa:"リャ", say:"リャ", word:"りゃくず", zh:"簡圖" },
+  { letter:"りゅ", name:"ryu", ipa:"リュ", say:"リュ", word:"りゅう", zh:"龍" },
+  { letter:"りょ", name:"ryo", ipa:"リョ", say:"リョ", word:"りょうり", zh:"料理" },
+  { letter:"ぎゃ", name:"gya", ipa:"ギャ", say:"ギャ", word:"ぎゃく", zh:"相反" },
+  { letter:"ぎゅ", name:"gyu", ipa:"ギュ", say:"ギュ", word:"ぎゅうにく", zh:"牛肉" },
+  { letter:"ぎょ", name:"gyo", ipa:"ギョ", say:"ギョ", word:"きんぎょ", zh:"金魚" },
+  { letter:"じゃ", name:"ja", ipa:"ジャ", say:"ジャ", word:"じゃんけん", zh:"猜拳" },
+  { letter:"じゅ", name:"ju", ipa:"ジュ", say:"ジュ", word:"じゅぎょう", zh:"上課" },
+  { letter:"じょ", name:"jo", ipa:"ジョ", say:"ジョ", word:"じょうろ", zh:"澆水壺" },
+  { letter:"びゃ", name:"bya", ipa:"ビャ", say:"ビャ", word:"さんびゃく", zh:"三百" },
+  { letter:"びゅ", name:"byu", ipa:"ビュ", say:"ビュ", word:"びゅうびゅう", zh:"（風）呼呼地吹" },
+  { letter:"びょ", name:"byo", ipa:"ビョ", say:"ビョ", word:"びょういん", zh:"醫院" },
+  { letter:"ぴゃ", name:"pya", ipa:"ピャ", say:"ピャ", word:"はっぴゃく", zh:"八百" },
+  { letter:"ぴゅ", name:"pyu", ipa:"ピュ", say:"ピュ", word:"コンピューター", zh:"電腦" },
+  { letter:"ぴょ", name:"pyo", ipa:"ピョ", say:"ピョ", word:"ぴょんぴょん", zh:"蹦蹦跳" },
 ];
 
 // ── 基本單字（sub = 漢字 · 羅馬拼音；語音一律念假名（念漢字會念錯，例如 水 被念成 sui））──
@@ -670,7 +712,9 @@ function quizData() {
 // ── 五十音：清音／濁音・半濁音 分開看（測驗也跟著目前選的那組）──
 let alphaGroup = 'sei';
 const DAKU = new Set('がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ');
-const alphaList = () => alphabet.filter(a => DAKU.has(a.letter) === (alphaGroup === 'daku'));
+const groupOf = a => a.letter.length > 1 ? 'yoon' : DAKU.has(a.letter) ? 'daku' : 'sei';
+const alphaList = () => alphabet.filter(a => groupOf(a) === alphaGroup);
+const GROUP_NAMES = { sei: '清音', daku: '濁音・半濁音', yoon: '拗音' };
 const sayOf = x => x.say || x.t;
 
 // ── 口音切換（只有設定 VARIANTS 的語言才有，例如西班牙文）──
@@ -964,15 +1008,79 @@ const AUDIO_FILES = {
     "ボ": "audio/ja-JP/932e758306ad.mp3",
     "ぼうし": "audio/ja-JP/51202db76b8f.mp3",
     "パ": "audio/ja-JP/b018b095c765.mp3",
-    "ぱちぱち": "audio/ja-JP/ec145716a1bc.mp3",
     "ピ": "audio/ja-JP/6fee548c3e93.mp3",
-    "ぴかぴか": "audio/ja-JP/9953344ea108.mp3",
     "プ": "audio/ja-JP/de4e9e30d8db.mp3",
-    "ぷかぷか": "audio/ja-JP/6c7ba48ec286.mp3",
     "ペ": "audio/ja-JP/edcb8d980326.mp3",
-    "ぺこぺこ": "audio/ja-JP/ba78a2154e44.mp3",
     "ポ": "audio/ja-JP/eb3cc9609c48.mp3",
-    "ぽかぽか": "audio/ja-JP/71b7eb8fba01.mp3",
+    "はっぱ": "audio/ja-JP/67be859e9db0.mp3",
+    "えんぴつ": "audio/ja-JP/99a901194940.mp3",
+    "てんぷら": "audio/ja-JP/2d3965380f56.mp3",
+    "ぺんぎん": "audio/ja-JP/9e85f9ff1add.mp3",
+    "たんぽぽ": "audio/ja-JP/61621947dfc1.mp3",
+    "キャ": "audio/ja-JP/d67d473c4f52.mp3",
+    "キャベツ": "audio/ja-JP/8776e9dbedc6.mp3",
+    "キュ": "audio/ja-JP/8ec3c9a2d526.mp3",
+    "きゅうり": "audio/ja-JP/9aedb0b92214.mp3",
+    "キョ": "audio/ja-JP/7cdc5b113118.mp3",
+    "きょうりゅう": "audio/ja-JP/d544e0529ea7.mp3",
+    "シャ": "audio/ja-JP/d92c79230cd8.mp3",
+    "しゃしん": "audio/ja-JP/bd568e42e80d.mp3",
+    "シュ": "audio/ja-JP/ea962ccc1ed1.mp3",
+    "しゅくだい": "audio/ja-JP/e1d50976477d.mp3",
+    "ショ": "audio/ja-JP/4ebaaaf0a397.mp3",
+    "しょうぼうしゃ": "audio/ja-JP/a3ff57e92d1b.mp3",
+    "チャ": "audio/ja-JP/2fc7041a120e.mp3",
+    "ちゃわん": "audio/ja-JP/6383f4525cff.mp3",
+    "チュ": "audio/ja-JP/557d6c8ba474.mp3",
+    "ちゅうしゃ": "audio/ja-JP/61fa0d6f8edf.mp3",
+    "チョ": "audio/ja-JP/19b8c5219790.mp3",
+    "ちょうちょ": "audio/ja-JP/bc74c876ccd0.mp3",
+    "ニャ": "audio/ja-JP/20af5084864c.mp3",
+    "こんにゃく": "audio/ja-JP/e059f1819257.mp3",
+    "ニュ": "audio/ja-JP/f01ad5b7b67d.mp3",
+    "ニョ": "audio/ja-JP/5aa6d589e295.mp3",
+    "にょろにょろ": "audio/ja-JP/6b7e7a60f3e2.mp3",
+    "ヒャ": "audio/ja-JP/7f9891dff53e.mp3",
+    "ひゃく": "audio/ja-JP/43999cc15fc7.mp3",
+    "ヒュ": "audio/ja-JP/0b7538f34d05.mp3",
+    "ひゅうひゅう": "audio/ja-JP/5740ec064f90.mp3",
+    "ヒョ": "audio/ja-JP/b9d68f31b9d7.mp3",
+    "ひょう": "audio/ja-JP/455921d2975a.mp3",
+    "ミャ": "audio/ja-JP/1e73b45094bb.mp3",
+    "さんみゃく": "audio/ja-JP/515d91974458.mp3",
+    "ミュ": "audio/ja-JP/fd2a3efc09e6.mp3",
+    "ミュージック": "audio/ja-JP/58b5e0fbb7da.mp3",
+    "ミョ": "audio/ja-JP/48134800bb55.mp3",
+    "みょうじ": "audio/ja-JP/03d9c4d91c41.mp3",
+    "リャ": "audio/ja-JP/26bc5be09f44.mp3",
+    "りゃくず": "audio/ja-JP/001999801086.mp3",
+    "リュ": "audio/ja-JP/45e9cdebf682.mp3",
+    "りゅう": "audio/ja-JP/d1db34b91e03.mp3",
+    "リョ": "audio/ja-JP/bbd49b06c718.mp3",
+    "りょうり": "audio/ja-JP/3e2767d407aa.mp3",
+    "ギャ": "audio/ja-JP/da72cb8fffb5.mp3",
+    "ぎゃく": "audio/ja-JP/87bfe42535cc.mp3",
+    "ギュ": "audio/ja-JP/e1bc5e0c84cf.mp3",
+    "ぎゅうにく": "audio/ja-JP/30b54720ef07.mp3",
+    "ギョ": "audio/ja-JP/2d3f68dbaec9.mp3",
+    "きんぎょ": "audio/ja-JP/d389aa2d2519.mp3",
+    "ジャ": "audio/ja-JP/118fdaa8423e.mp3",
+    "じゃんけん": "audio/ja-JP/fa2533b562ba.mp3",
+    "ジュ": "audio/ja-JP/994f4e475276.mp3",
+    "じゅぎょう": "audio/ja-JP/0526207fab6c.mp3",
+    "ジョ": "audio/ja-JP/777a68de4450.mp3",
+    "じょうろ": "audio/ja-JP/688074e62935.mp3",
+    "ビャ": "audio/ja-JP/411de339fbea.mp3",
+    "さんびゃく": "audio/ja-JP/923d8aac9d07.mp3",
+    "ビュ": "audio/ja-JP/5ef1c668aa1b.mp3",
+    "びゅうびゅう": "audio/ja-JP/627c7ca45ae2.mp3",
+    "ビョ": "audio/ja-JP/691d9041f7f5.mp3",
+    "ピャ": "audio/ja-JP/d135e75861aa.mp3",
+    "はっぴゃく": "audio/ja-JP/2b3f199fa5ec.mp3",
+    "ピュ": "audio/ja-JP/e7e835b4b5c5.mp3",
+    "コンピューター": "audio/ja-JP/c69824744547.mp3",
+    "ピョ": "audio/ja-JP/d9fdc53dbc45.mp3",
+    "ぴょんぴょん": "audio/ja-JP/c9f90557d64c.mp3",
   },
 };
 // ── 預錄音檔對照表 ── END
@@ -1040,7 +1148,7 @@ function updateCounter() {
       `${u.name}${tags ? '・' + tags : ''}`;
   } else {
     document.getElementById('counter').textContent =
-      currentUnit === 'alphabet' && alphaGroup === 'daku' ? `${u.name}・濁音・半濁音` : u.name;
+      currentUnit === 'alphabet' && alphaGroup !== 'sei' ? `${u.name}・${GROUP_NAMES[alphaGroup]}` : u.name;
   }
 }
 
@@ -1060,11 +1168,10 @@ function renderBrowse() {
   quizEl.style.display = 'none';
 
   if (currentUnit === 'alphabet') {
-    grid.className = 'grid alpha-table';
+    grid.className = 'grid alpha-table' + (alphaGroup === 'yoon' ? ' yoon' : '');
     const groupChips = `
       <div class="agroup">
-        <button class="chip${alphaGroup === 'sei' ? ' active' : ''}" data-agroup="sei">清音</button>
-        <button class="chip${alphaGroup === 'daku' ? ' active' : ''}" data-agroup="daku">濁音・半濁音</button>
+        ${Object.entries(GROUP_NAMES).map(([k, n]) => `<button class="chip${alphaGroup === k ? ' active' : ''}" data-agroup="${k}">${n}</button>`).join('')}
       </div>`;
     grid.innerHTML = groupChips + alphaList().map(a => `
       <div class="alpha-row${a.note ? ' has-note' : ''}">
