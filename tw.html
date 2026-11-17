@@ -297,6 +297,9 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 .support-btn:hover{transform:scale(1.05)}
 .support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
 @media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
+/* 台語對話一行有三列（漢字、台羅、華語）：A/B 佔滿三列，內容都放在右邊那欄 */
+.line .who{grid-row:span 3}
+.line > :not(.who){grid-column:2}
 </style>
 </head>
 <body>
