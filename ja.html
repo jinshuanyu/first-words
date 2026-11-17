@@ -269,7 +269,7 @@ mark{background:#FFD978;color:inherit;border-radius:3px;padding:0 1px}
 
 /* ── 字型：中文介面用 Noto Sans TC；日文的部分羅馬字用 Noto Sans、假名漢字用 Noto Sans JP ── */
 body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
-.header h1,.al-letter,.al-main,.al-ipa,.card .main,.card .sub,.line .it,.fc-back .ans-main,.fc-back .ans-sub{
+.header h1,.al-letter,.al-main,.al-kana,.al-ipa,.card .main,.card .sub,.line .it,.fc-back .ans-main,.fc-back .ans-sub{
   font-family:'Noto Sans','Noto Sans JP','Hiragino Sans','Yu Gothic','Noto Sans TC',sans-serif;
 }
 
@@ -299,6 +299,10 @@ body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
 .support-btn:hover{transform:scale(1.05)}
 .support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
 @media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
+
+/* 五十音：片假名放在羅馬字上面、放大 */
+.al-kana{font-size:1.9rem;color:#2C2C2C;line-height:1.2}
+@media(max-width:420px){ .al-kana{font-size:1.7rem} }
 </style>
 </head>
 <body>
@@ -380,6 +384,33 @@ const alphabet = [
   { letter:"わ", name:"wa", ipa:"ワ", say:"ワ", word:"わに", zh:"鱷魚" },
   { letter:"を", name:"o", ipa:"ヲ", say:"ヲ", word:"ほんをよむ", zh:"讀書", note:"只當助詞用，念 o" },
   { letter:"ん", name:"n", ipa:"ン", say:"ン", word:"ほん", zh:"書", note:"不會出現在字首" },
+  // ── 濁音（右上加 ゛）──
+  { letter:"が", name:"ga", ipa:"ガ", say:"ガ", word:"がっこう", zh:"學校", note:"濁音：右上加 ゛" },
+  { letter:"ぎ", name:"gi", ipa:"ギ", say:"ギ", word:"ぎゅうにゅう", zh:"牛奶" },
+  { letter:"ぐ", name:"gu", ipa:"グ", say:"グ", word:"ぐるぐる", zh:"轉圈圈" },
+  { letter:"げ", name:"ge", ipa:"ゲ", say:"ゲ", word:"げた", zh:"木屐" },
+  { letter:"ご", name:"go", ipa:"ゴ", say:"ゴ", word:"ごはん", zh:"飯" },
+  { letter:"ざ", name:"za", ipa:"ザ", say:"ザ", word:"ざりがに", zh:"螯蝦" },
+  { letter:"じ", name:"ji", ipa:"ジ", say:"ジ", word:"じてんしゃ", zh:"腳踏車", note:"念 ji，不是 zi" },
+  { letter:"ず", name:"zu", ipa:"ズ", say:"ズ", word:"ずかん", zh:"圖鑑" },
+  { letter:"ぜ", name:"ze", ipa:"ゼ", say:"ゼ", word:"ぜんぶ", zh:"全部" },
+  { letter:"ぞ", name:"zo", ipa:"ゾ", say:"ゾ", word:"ぞう", zh:"大象" },
+  { letter:"だ", name:"da", ipa:"ダ", say:"ダ", word:"だんご", zh:"糰子" },
+  { letter:"ぢ", name:"ji", ipa:"ヂ", say:"ヂ", word:"はなぢ", zh:"鼻血", note:"念法跟 じ 一樣，很少用" },
+  { letter:"づ", name:"zu", ipa:"ヅ", say:"ヅ", word:"みかづき", zh:"新月", note:"念法跟 ず 一樣，很少用" },
+  { letter:"で", name:"de", ipa:"デ", say:"デ", word:"でんしゃ", zh:"電車" },
+  { letter:"ど", name:"do", ipa:"ド", say:"ド", word:"どんぐり", zh:"橡實" },
+  { letter:"ば", name:"ba", ipa:"バ", say:"バ", word:"ばら", zh:"玫瑰" },
+  { letter:"び", name:"bi", ipa:"ビ", say:"ビ", word:"びょういん", zh:"醫院" },
+  { letter:"ぶ", name:"bu", ipa:"ブ", say:"ブ", word:"ぶた", zh:"豬" },
+  { letter:"べ", name:"be", ipa:"ベ", say:"ベ", word:"べんとう", zh:"便當" },
+  { letter:"ぼ", name:"bo", ipa:"ボ", say:"ボ", word:"ぼうし", zh:"帽子" },
+  // ── 半濁音（右上加 ゜）──
+  { letter:"ぱ", name:"pa", ipa:"パ", say:"パ", word:"ぱちぱち", zh:"拍手聲", note:"半濁音：右上加 ゜" },
+  { letter:"ぴ", name:"pi", ipa:"ピ", say:"ピ", word:"ぴかぴか", zh:"閃閃發亮" },
+  { letter:"ぷ", name:"pu", ipa:"プ", say:"プ", word:"ぷかぷか", zh:"輕輕浮著" },
+  { letter:"ぺ", name:"pe", ipa:"ペ", say:"ペ", word:"ぺこぺこ", zh:"肚子餓扁扁" },
+  { letter:"ぽ", name:"po", ipa:"ポ", say:"ポ", word:"ぽかぽか", zh:"暖洋洋" },
 ];
 
 // ── 基本單字（sub = 漢字 · 羅馬拼音；語音一律念假名（念漢字會念錯，例如 水 被念成 sui））──
@@ -888,6 +919,48 @@ const AUDIO_FILES = {
     "わたしは まるまる です": "audio/ja-JP/becdad46a9c7.mp3",
     "アイスクリーム": "audio/ja-JP/2293880ec15c.mp3",
     "かんぺき！": "audio/ja-JP/8223e9419bc5.mp3",
+    "ガ": "audio/ja-JP/f41a3c3f91b7.mp3",
+    "ギ": "audio/ja-JP/9eed134dddec.mp3",
+    "グ": "audio/ja-JP/65bad2ac8d51.mp3",
+    "ぐるぐる": "audio/ja-JP/0dedfe5eef12.mp3",
+    "ゲ": "audio/ja-JP/0a1f9c2a75ed.mp3",
+    "げた": "audio/ja-JP/721507bb842d.mp3",
+    "ゴ": "audio/ja-JP/ec44119db9e1.mp3",
+    "ザ": "audio/ja-JP/c134571499b7.mp3",
+    "ざりがに": "audio/ja-JP/0a765ab8c2af.mp3",
+    "ジ": "audio/ja-JP/84c8dd824a50.mp3",
+    "ズ": "audio/ja-JP/9a95d46dbb9a.mp3",
+    "ずかん": "audio/ja-JP/ba092ef076a5.mp3",
+    "ゼ": "audio/ja-JP/3ff5abafb878.mp3",
+    "ぜんぶ": "audio/ja-JP/ced9a28fa742.mp3",
+    "ゾ": "audio/ja-JP/aabee1c9b56a.mp3",
+    "ダ": "audio/ja-JP/ce97e554d512.mp3",
+    "だんご": "audio/ja-JP/59e2eaeab531.mp3",
+    "ヂ": "audio/ja-JP/ee08625e40e8.mp3",
+    "はなぢ": "audio/ja-JP/b97ed672e40e.mp3",
+    "ヅ": "audio/ja-JP/653e8e39c79d.mp3",
+    "みかづき": "audio/ja-JP/5060ee2fd74d.mp3",
+    "デ": "audio/ja-JP/b5fef15d0eea.mp3",
+    "ド": "audio/ja-JP/43cd8a15786a.mp3",
+    "どんぐり": "audio/ja-JP/e69cb4bd8b21.mp3",
+    "バ": "audio/ja-JP/0d6385fd2344.mp3",
+    "ばら": "audio/ja-JP/5b65fd63c4a4.mp3",
+    "ビ": "audio/ja-JP/c1afce883a60.mp3",
+    "ブ": "audio/ja-JP/d15bfd3b8905.mp3",
+    "ベ": "audio/ja-JP/37b86a25b7d0.mp3",
+    "べんとう": "audio/ja-JP/2c2de94e2b03.mp3",
+    "ボ": "audio/ja-JP/932e758306ad.mp3",
+    "ぼうし": "audio/ja-JP/51202db76b8f.mp3",
+    "パ": "audio/ja-JP/b018b095c765.mp3",
+    "ぱちぱち": "audio/ja-JP/ec145716a1bc.mp3",
+    "ピ": "audio/ja-JP/6fee548c3e93.mp3",
+    "ぴかぴか": "audio/ja-JP/9953344ea108.mp3",
+    "プ": "audio/ja-JP/de4e9e30d8db.mp3",
+    "ぷかぷか": "audio/ja-JP/6c7ba48ec286.mp3",
+    "ペ": "audio/ja-JP/edcb8d980326.mp3",
+    "ぺこぺこ": "audio/ja-JP/ba78a2154e44.mp3",
+    "ポ": "audio/ja-JP/eb3cc9609c48.mp3",
+    "ぽかぽか": "audio/ja-JP/71b7eb8fba01.mp3",
   },
 };
 // ── 預錄音檔對照表 ── END
@@ -952,9 +1025,9 @@ function updateCounter() {
     const r = phonicsRule();
     const tags = [currentCat, r && r.label].filter(Boolean).join('・');
     document.getElementById('counter').textContent =
-      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+      `${u.name}${tags ? '・' + tags : ''}`;
   } else {
-    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+    document.getElementById('counter').textContent = u.name;
   }
 }
 
@@ -979,8 +1052,8 @@ function renderBrowse() {
       <div class="alpha-row${a.note ? ' has-note' : ''}">
         <div class="al-letter" data-speak="${a.say || a.name}">${a.letter}</div>
         <div class="al-name" data-speak="${a.say || a.name}">
-          <div class="al-main">${a.name}</div>
-          <div class="al-ipa">${ipaOf(a)}</div>
+          <div class="al-kana">${ipaOf(a)}</div>
+          <div class="al-ipa">${a.name}</div>
           ${a.note ? `<div class="al-sub">${a.note}</div>` : ''}
         </div>
         <div class="al-word" data-speak="${a.wordSay || a.word}">

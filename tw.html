@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="referrer" content="no-referrer">
-<title>Tsia̍h-pá--buē？台語學習卡</title>
+<title>Tsia̍h-pá--buē?台語學習卡</title>
 <!-- 芫荽 Iansui：台羅的附加符號（n̄、o͘、a̍）和台語漢字才會正常顯示 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -304,7 +304,7 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 <div class="header">
   <a class="home" href="./" aria-label="回入口頁">← 選語言</a>
   <p class="lang-tag">台語</p>
-  <h1>Tsia̍h-pá--buē？</h1>
+  <h1>Tsia̍h-pá--buē?</h1>
   <p class="subtitle" id="counter"></p>
 </div>
 
@@ -687,9 +687,9 @@ function updateCounter() {
     const r = phonicsRule();
     const tags = [currentCat, r && r.label].filter(Boolean).join('・');
     document.getElementById('counter').textContent =
-      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+      `${u.name}${tags ? '・' + tags : ''}`;
   } else {
-    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+    document.getElementById('counter').textContent = u.name;
   }
 }
 

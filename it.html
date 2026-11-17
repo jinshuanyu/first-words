@@ -303,7 +303,7 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 <div class="header">
   <a class="home" href="./" aria-label="回入口頁">← 選語言</a>
   <p class="lang-tag">義大利語</p>
-  <h1>Ciao！</h1>
+  <h1>Ciao!</h1>
   <p class="subtitle" id="counter"></p>
 </div>
 
@@ -894,9 +894,9 @@ function updateCounter() {
     const r = phonicsRule();
     const tags = [currentCat, r && r.label].filter(Boolean).join('・');
     document.getElementById('counter').textContent =
-      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+      `${u.name}${tags ? '・' + tags : ''}`;
   } else {
-    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+    document.getElementById('counter').textContent = u.name;
   }
 }
 

@@ -1130,9 +1130,9 @@ function updateCounter() {
     const r = phonicsRule();
     const tags = [currentCat, r && r.label].filter(Boolean).join('・');
     document.getElementById('counter').textContent =
-      `${u.name}${tags ? '・' + tags : ''} ✦ ${filteredWords().length} 項`;
+      `${u.name}${tags ? '・' + tags : ''}`;
   } else {
-    document.getElementById('counter').textContent = `${u.name} ✦ ${u.data.length} 項`;
+    document.getElementById('counter').textContent = u.name;
   }
 }
 
