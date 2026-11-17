@@ -296,6 +296,8 @@ body,.header h1,.al-letter,.card .main,.dialog-card h3,.fc-back .ans-main{font-f
 .support-btn:hover{transform:scale(1.05)}
 .support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
 @media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
+
+.emo-img{height:1.15em;width:auto;vertical-align:-0.15em}
 </style>
 </head>
 <body>
@@ -440,7 +442,7 @@ const words = [
   { emoji:"🐟", t:"poisson",   sub:"/pwa.sɔ̃/",    zh:"魚", cat:"食物" },
   { emoji:"🎂", t:"gâteau",    sub:"/ɡa.to/",     zh:"蛋糕", cat:"食物" },
   { emoji:"🧃", t:"jus",       sub:"/ʒy/",        zh:"果汁", cat:"食物" },
-  { emoji:"🍰", t:"éclair", sub:"/e.klɛʁ/", zh:"閃電泡芙", cat:"食物" },
+  { emoji:"🍰", img:"img/eclair.png", t:"éclair", sub:"/e.klɛʁ/", zh:"閃電泡芙", cat:"食物" },   // 沒有閃電泡芙 emoji，用圖片（img 有值就顯示圖片）
   // 交通
   { emoji:"🚌", t:"bus",       sub:"/bys/",       zh:"公車", cat:"交通" },
   { emoji:"🚆", t:"train",     sub:"/tʁɛ̃/",       zh:"火車", cat:"交通" },
@@ -626,6 +628,8 @@ function quizData() {
   return currentUnit === 'words' ? filteredWords() : units.find(u => u.id === currentUnit).data;
 }
 const sayOf = x => x.say || x.t;
+// 單字圖示：有 img 就用圖片（大小跟 emoji 一樣），沒有就用 emoji
+const emojiHTML = x => x.img ? `<img src="${x.img}" alt="" class="emo-img">` : x.emoji;
 
 // ── 口音切換（只有設定 VARIANTS 的語言才有，例如西班牙文）──
 const VARIANTS = null;
@@ -996,7 +1000,7 @@ function renderBrowse() {
     grid.innerHTML = catChips + phonicsChips + (list.length ? '' : `<div class="quiz-msg" style="grid-column:1/-1">這個分類裡沒有符合這條規則的字。</div>`) + list.map(w => `
       <div class="card" data-speak="${sayOf(w)}">
         <button class="speak" data-speak="${sayOf(w)}" aria-label="播放">🔊</button>
-        <div class="emoji">${w.emoji}</div>
+        <div class="emoji">${emojiHTML(w)}</div>
         <div class="main" style="font-size:1.15rem">${hl(w.t)}</div>
         ${subLine(w)}
         <div class="desc">${w.zh}</div>
@@ -1096,7 +1100,7 @@ function renderQuizCard() {
       <div class="ans-desc">${item.word}（${item.zh}）</div>`;
   }
   else {
-    const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${item.emoji}</div>` : '';
+    const em = item.emoji ? `<div style="font-size:3rem;line-height:1.2">${emojiHTML(item)}</div>` : '';
     frontHTML = `${em}<div class="prompt">${item.zh}</div><div class="tap-hint">法文怎麼說？點一下翻牌</div>`;
     backHTML = `${em}
       <div class="ans-main" style="font-size:1.6rem">${currentUnit === 'words' ? hl(item.t) : item.t}</div>
