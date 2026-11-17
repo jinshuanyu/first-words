@@ -300,9 +300,16 @@ body{font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif}
 .support-btn:focus{outline:3px solid rgba(251,191,36,.45);outline-offset:2px}
 @media (max-width:640px){ .support-btn{font-size:0.9rem;font-weight:500;padding:.45rem 1rem} }
 
-/* 五十音：片假名放在羅馬字上面、放大 */
-.al-kana{font-size:1.9rem;color:#2C2C2C;line-height:1.2}
-@media(max-width:420px){ .al-kana{font-size:1.7rem} }
+/* 五十音：片假名跟平假名一樣大、同一高度，羅馬字小字放旁邊 */
+.alpha-table .alpha-row{align-items:start}
+.al-letter,.al-kana{line-height:1.15}
+.al-kana-line{display:flex;align-items:baseline;gap:0.5rem}
+.al-kana{font-size:2.8rem;color:#2C2C2C}
+.al-kana-line .al-ipa{margin-top:0}
+.alpha-table .al-word{padding-top:0.55rem}
+@media(max-width:420px){ .al-kana{font-size:2.3rem} .alpha-table .al-word{padding-top:0.45rem} }
+/* 清音／濁音・半濁音切換 */
+.agroup{display:flex;justify-content:center;gap:0.5rem}
 </style>
 </head>
 <body>
@@ -657,8 +664,13 @@ function hl(word, field = 't') {
 }
 // 測驗用的資料：基本單字頁會跟著篩選
 function quizData() {
+  if (currentUnit === 'alphabet') return alphaList();
   return currentUnit === 'words' ? filteredWords() : units.find(u => u.id === currentUnit).data;
 }
+// ── 五十音：清音／濁音・半濁音 分開看（測驗也跟著目前選的那組）──
+let alphaGroup = 'sei';
+const DAKU = new Set('がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽ');
+const alphaList = () => alphabet.filter(a => DAKU.has(a.letter) === (alphaGroup === 'daku'));
 const sayOf = x => x.say || x.t;
 
 // ── 口音切換（只有設定 VARIANTS 的語言才有，例如西班牙文）──
@@ -1027,7 +1039,8 @@ function updateCounter() {
     document.getElementById('counter').textContent =
       `${u.name}${tags ? '・' + tags : ''}`;
   } else {
-    document.getElementById('counter').textContent = u.name;
+    document.getElementById('counter').textContent =
+      currentUnit === 'alphabet' && alphaGroup === 'daku' ? `${u.name}・濁音・半濁音` : u.name;
   }
 }
 
@@ -1048,12 +1061,16 @@ function renderBrowse() {
 
   if (currentUnit === 'alphabet') {
     grid.className = 'grid alpha-table';
-    grid.innerHTML = alphabet.map(a => `
+    const groupChips = `
+      <div class="agroup">
+        <button class="chip${alphaGroup === 'sei' ? ' active' : ''}" data-agroup="sei">清音</button>
+        <button class="chip${alphaGroup === 'daku' ? ' active' : ''}" data-agroup="daku">濁音・半濁音</button>
+      </div>`;
+    grid.innerHTML = groupChips + alphaList().map(a => `
       <div class="alpha-row${a.note ? ' has-note' : ''}">
         <div class="al-letter" data-speak="${a.say || a.name}">${a.letter}</div>
         <div class="al-name" data-speak="${a.say || a.name}">
-          <div class="al-kana">${ipaOf(a)}</div>
-          <div class="al-ipa">${a.name}</div>
+          <div class="al-kana-line"><span class="al-kana">${ipaOf(a)}</span><span class="al-ipa">${a.name}</span></div>
           ${a.note ? `<div class="al-sub">${a.note}</div>` : ''}
         </div>
         <div class="al-word" data-speak="${a.wordSay || a.word}">
@@ -1122,6 +1139,13 @@ document.getElementById('browse-view').addEventListener('click', e => {
   const t = e.target.closest('[data-toggle]');
   const c = e.target.closest('[data-cat]');
   const f = e.target.closest('[data-filter]');
+  const g = e.target.closest('[data-agroup]');
+  if (g) {
+    alphaGroup = g.dataset.agroup;
+    updateCounter();
+    renderBrowse();
+    return;
+  }
   if (t || c || f) {
     if (t) phonicsOpen = !phonicsOpen;
     if (c) currentCat = c.dataset.cat || null;
